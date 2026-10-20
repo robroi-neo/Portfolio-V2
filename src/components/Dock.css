@@ -1,0 +1,94 @@
+/* Floating dock — fixed, bottom center, frosted white (design.md §7). */
+
+.dock {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  bottom: max(24px, env(safe-area-inset-bottom));
+  transform: translateX(-50%);
+  z-index: var(--z-dock);
+  padding: 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-dock);
+  background: rgb(255 255 255 / 0.88);
+  -webkit-backdrop-filter: blur(12px) saturate(1.4);
+  backdrop-filter: blur(12px) saturate(1.4);
+  box-shadow: var(--shadow-dock);
+}
+
+.dock__list {
+  display: flex;
+  gap: 4px;
+  margin: 0;
+}
+
+.dock__item {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: var(--tap);
+  height: var(--tap);
+  border-radius: var(--radius-control-lg);
+  color: var(--text-muted);
+  text-decoration: none;
+  transition:
+    background-color var(--dur-hover) ease,
+    color var(--dur-hover) ease;
+}
+
+.dock__item.is-active {
+  background: var(--surface-active);
+  color: var(--text);
+}
+
+.dock__icon {
+  display: grid;
+  transition: transform var(--dur-hover) var(--ease-out);
+}
+
+/* Tooltip label above the icon. */
+.dock__tooltip {
+  position: absolute;
+  bottom: calc(100% + 12px);
+  left: 50%;
+  translate: -50% 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--text);
+  color: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity var(--dur-hover) ease,
+    translate var(--dur-hover) var(--ease-out);
+}
+
+/* Hover effects only on devices that actually hover (not touch screens). */
+@media (hover: hover) {
+  .dock__item:hover {
+    color: var(--text);
+  }
+  .dock__item:hover .dock__icon {
+    transform: translateY(-4px) scale(1.15);
+  }
+  .dock__item:hover .dock__tooltip {
+    opacity: 1;
+    translate: -50% 0;
+  }
+}
+
+/* Keyboard users get the tooltip too. */
+.dock__item:focus-visible .dock__tooltip {
+  opacity: 1;
+  translate: -50% 0;
+}
+
+.dock__item:focus-visible {
+  outline-offset: 2px;
+  border-radius: var(--radius-control-lg);
+}

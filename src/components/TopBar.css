@@ -1,0 +1,25 @@
+/* Top strip — location + live clock, aligned to the content column. */
+
+.topbar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: min(var(--column), 100% - var(--gutter) * 2);
+  margin-inline: auto;
+  padding-top: 20px;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tracking-label);
+  color: var(--text-muted);
+}
+
+.topbar__location {
+  text-transform: uppercase;
+}
+
+.topbar__clock {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-variant-numeric: tabular-nums; /* digits keep their width so the text doesn't jitter */
+}

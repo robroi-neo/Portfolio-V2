@@ -1,0 +1,76 @@
+/* ==========================================================================
+   Layout — one narrow centered column, with optional full-width breakouts.
+
+   Every section is a 3-column grid:
+     [full-start] gutter [content-start] 640px column [content-end] gutter [full-end]
+   Children sit in the middle column by default. Add `.breakout` to a child
+   and it stretches edge to edge (used for the project fan and photo fan).
+   ========================================================================== */
+
+.page {
+  /* leave room so the fixed dock never covers the last bit of content */
+  padding-bottom: calc(var(--tap) + 24px + 96px);
+}
+
+.section {
+  display: grid;
+  grid-template-columns:
+    [full-start] minmax(var(--gutter), 1fr)
+    [content-start] min(var(--column), 100% - var(--gutter) * 2)
+    [content-end] minmax(var(--gutter), 1fr)
+    [full-end];
+  row-gap: 32px;
+  padding-block: calc(var(--section-gap) / 2);
+  /* when the dock scrolls here, leave a little air above the label */
+  scroll-margin-top: 24px;
+}
+
+.section > * {
+  grid-column: content;
+}
+
+.section > .breakout {
+  grid-column: full;
+}
+
+.section:first-child {
+  padding-top: 64px;
+}
+
+.section__header {
+  display: grid;
+  gap: 8px;
+}
+
+.section__intro {
+  color: var(--text-muted);
+}
+
+/* Dotted grid band (behind the project fan). */
+.dot-grid {
+  background-color: var(--bg);
+  background-image: radial-gradient(var(--grid-dot) 1px, transparent 1px);
+  background-size: 16px 16px;
+}
+
+/* ---------- Placeholder slot ----------
+   Marks where a Phase 2+ component will go. Delete as each one is built. */
+.slot {
+  display: grid;
+  place-items: center;
+  min-height: 160px;
+  padding: 24px;
+  border: 1px dashed var(--border-strong);
+  border-radius: var(--radius-card);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--label);
+  text-align: center;
+}
+
+.slot.breakout {
+  border-radius: 0;
+  border-inline: 0;
+}
