@@ -1,8 +1,10 @@
 import Dock from './components/Dock.jsx'
 import Hero from './components/Hero.jsx'
+import ProjectFan from './components/ProjectFan.jsx'
 import Section from './components/Section.jsx'
 import Slot from './components/Slot.jsx'
 import TopBar from './components/TopBar.jsx'
+import { PROJECTS } from './data/projects.js'
 import { SECTIONS, SECTION_IDS } from './data/sections.js'
 import { useActiveSection } from './hooks/useActiveSection.js'
 import { useScrollToHash } from './hooks/useScrollToHash.js'
@@ -24,11 +26,9 @@ export default function App() {
           id="projects"
           label="Work"
           heading="Selected projects"
-          intro="Hover to spread them out. Click one to open its case study."
+          intro="Here are some of my proudest works so far. Click to see more."
         >
-          <Slot className="breakout dot-grid" minHeight={380}>
-            Project fan · 4 cards
-          </Slot>
+          <ProjectFan projects={PROJECTS} />
         </Section>
 
         <Section id="experience" label="Experience" heading="Where I've worked and learned">

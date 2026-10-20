@@ -1,0 +1,168 @@
+/* Project popup — dark backdrop, framed screenshot, caption underneath. */
+
+.project-modal {
+  width: min(880px, 100vw - 32px);
+  max-width: none;
+  max-height: none;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--loud-text);
+  overflow: visible;
+}
+
+.project-modal::backdrop {
+  background: rgb(17 17 17 / 0.92);
+  -webkit-backdrop-filter: blur(4px);
+  backdrop-filter: blur(4px);
+}
+
+.project-modal[open] {
+  animation: modal-in var(--dur-window) var(--ease-out);
+}
+
+.project-modal[open]::backdrop {
+  animation: backdrop-in var(--dur-window) ease;
+}
+
+/* ---------- Card → popup morph (View Transitions) ----------
+   The frame wears the shared name while open; ProjectFan gives it to the
+   card otherwise. The browser animates position + size between the two. */
+.project-modal[open] .project-modal__frame {
+  view-transition-name: project-morph;
+}
+
+::view-transition-group(project-morph) {
+  animation-duration: var(--dur-fan);
+  animation-timing-function: var(--ease-out);
+  overflow: clip;
+  border-radius: var(--radius-window);
+}
+
+/* Card and frame have different shapes: fill the box instead of stretching. */
+::view-transition-old(project-morph),
+::view-transition-new(project-morph) {
+  height: 100%;
+  object-fit: cover;
+  object-position: top;
+}
+
+/* Backdrop + caption fade alongside the morph. */
+::view-transition-old(root),
+::view-transition-new(root) {
+  animation-duration: var(--dur-window);
+}
+
+/* Browsers with View Transitions get the morph, so skip the fallback pop-in. */
+@supports (view-transition-name: none) {
+  .project-modal[open],
+  .project-modal[open]::backdrop {
+    animation: none;
+  }
+}
+
+@keyframes modal-in {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.98);
+  }
+}
+
+@keyframes backdrop-in {
+  from {
+    opacity: 0;
+  }
+}
+
+/* Stop the page behind from scrolling while the popup is open. */
+html:has(.project-modal[open]) {
+  overflow: hidden;
+}
+
+.project-modal__body {
+  position: relative;
+  display: grid;
+  gap: 20px;
+}
+
+.project-modal__close {
+  position: absolute;
+  top: -12px;
+  right: -12px;
+  z-index: 1;
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid #333;
+  border-radius: var(--radius-pill);
+  background: var(--loud-bg);
+  color: var(--loud-text);
+  cursor: pointer;
+}
+
+/* White frame around the screenshot. */
+.project-modal__frame {
+  border: 6px solid #fff;
+  border-radius: var(--radius-window);
+  background: #262626;
+  overflow: hidden;
+}
+
+.project-modal__preview.preview--image {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-height: 70vh;
+  border-radius: 0;
+  object-fit: contain;
+}
+
+.project-modal__preview.preview--sketch {
+  aspect-ratio: 16 / 10;
+  padding: 32px;
+  color: var(--loud-text);
+}
+
+.project-modal__preview .preview__blocks span {
+  height: 120px;
+}
+
+.project-modal__caption {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  max-width: 60ch;
+  margin-inline: auto;
+  text-align: center;
+}
+
+.project-modal__title {
+  color: var(--loud-text);
+  font-size: 1.125rem;
+}
+
+.project-modal__description {
+  color: var(--loud-muted);
+  font-size: 0.9375rem;
+}
+
+.project-modal__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  margin-top: 4px;
+  padding: 8px 14px;
+  border: 1px solid #333;
+  border-radius: var(--radius-control);
+  color: var(--loud-text);
+  font-size: 0.875rem;
+  text-decoration: none;
+  transition: background-color var(--dur-press) ease;
+}
+
+@media (hover: hover) {
+  .project-modal__link:hover {
+    background: #222;
+  }
+}

@@ -1,0 +1,208 @@
+/* Project fan — overlapping cards that spread out on hover (design.md §2). */
+
+.fan {
+  --card-w: 280px;
+  --rest-gap: 140px; /* horizontal distance between cards at rest */
+  --gap: var(--rest-gap);
+  --tilt: 5deg; /* rotation per step from the middle */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1); /* fast start, long soft landing */
+  padding-block: 30px;
+  overflow-x: clip;
+}
+
+/* The list is also the hover zone, so size it to the resting fan (plus a
+   little margin) instead of the full page width. Cards that spread outside
+   it still count as hovered, so the fan doesn't collapse under the cursor. */
+.fan__list {
+  position: relative;
+  width: min(100%, calc(var(--card-w) + (var(--count) - 1) * var(--rest-gap) + 48px));
+  height: 320px;
+  margin: 0 auto;
+}
+
+.fan__item {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  width: var(--card-w);
+  transform: translate(-50%, -50%)
+    translateX(calc(var(--offset) * var(--gap)))
+    translateY(calc(var(--drop) * 14px))
+    rotate(calc(var(--offset) * var(--tilt)));
+  will-change: transform;
+  /* Cards further from the middle start a touch later, so the fan unfolds
+     like a hand of cards instead of all moving in lockstep. */
+  transition:
+    transform 1.2s var(--ease-smooth) calc(var(--drop) * 25ms),
+    z-index 0s 0.7s; /* when leaving, drop behind neighbours only after shrinking */
+}
+
+/* Spread out while the pointer (or keyboard focus) is in the fan. */
+.fan:has(.fan__list:hover),
+.fan:focus-within {
+  --gap: clamp(160px, 21vw, 260px);
+  --tilt: 1.5deg;
+}
+
+/* Hovered/focused card comes to the front. */
+.fan__item:hover,
+.fan__item:focus-within {
+  z-index: 1;
+}
+
+/* Spreading out: same slow timing as closing back up. */
+.fan:has(.fan__list:hover) .fan__item,
+.fan:focus-within .fan__item {
+  transition:
+    transform 1.2s var(--ease-smooth) calc(var(--drop) * 25ms),
+    z-index 0s; /* come to the front immediately */
+}
+
+/* ---------- Card ---------- */
+
+.fan__card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  aspect-ratio: 4 / 3; /* same shape at any width (fan or column) */
+  padding: 14px 16px 16px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-window);
+  box-shadow: var(--shadow-card), 0 12px 32px rgb(0 0 0 / 0.08);
+  text-align: left;
+  cursor: pointer;
+  overflow: hidden;
+  transition:
+    transform 0.9s var(--ease-smooth),
+    box-shadow 0.9s var(--ease-smooth);
+}
+
+/* Hovered card lifts and grows a little. */
+@media (hover: hover) {
+  .fan__card:hover {
+    transform: translateY(-12px) scale(1.06);
+    box-shadow: var(--shadow-card), 0 24px 48px rgb(0 0 0 / 0.16);
+  }
+}
+
+.fan__card--light {
+  background: var(--surface);
+  color: var(--text);
+}
+
+.fan__card--dark {
+  background: var(--loud-bg);
+  border-color: #222;
+  color: var(--loud-text);
+}
+
+.fan__dots {
+  display: flex;
+  gap: 5px;
+}
+
+.fan__dots span {
+  width: 7px;
+  height: 7px;
+  border-radius: var(--radius-pill);
+  background: currentColor;
+  opacity: 0.25;
+}
+
+.fan__title {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: var(--tracking-heading);
+}
+
+.fan__tags {
+  display: flex;
+  gap: 6px;
+}
+
+.chip {
+  padding: 2px 8px;
+  border-radius: 6px;
+  background: var(--surface-muted);
+  color: var(--text-muted);
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.chip--accent {
+  background: var(--accent);
+  color: var(--text);
+}
+
+/* Preview takes whatever height is left under the title and tags. */
+.fan__preview {
+  flex: 1 1 0;
+  min-height: 0;
+}
+
+/* ---------- Preview (image or placeholder sketch) ---------- */
+
+.preview--image {
+  width: 100%;
+  height: 100%;
+  border-radius: 8px;
+  object-fit: cover;
+  object-position: top;
+}
+
+.preview--sketch {
+  display: grid;
+  align-content: start;
+  gap: 8px;
+}
+
+.preview__line {
+  height: 8px;
+  border-radius: 4px;
+  background: currentColor;
+  opacity: 0.12;
+}
+
+.preview__line--short {
+  width: 60%;
+}
+
+.preview__blocks {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin-top: 6px;
+}
+
+.preview__blocks span {
+  height: 56px;
+  border-radius: 6px;
+  background: currentColor;
+  opacity: 0.1;
+}
+
+.preview__blocks .is-accent {
+  background: var(--accent);
+  opacity: 1;
+}
+
+/* ---------- Phones: no fan, cards stacked in a column ---------- */
+
+@media (max-width: 719px) {
+  .fan__list {
+    display: grid;
+    justify-items: center;
+    gap: 16px;
+    width: auto;
+    height: auto;
+    padding: 32px var(--gutter);
+  }
+
+  .fan__item {
+    position: static;
+    width: 100%;
+    max-width: 420px;
+    transform: none;
+  }
+}
