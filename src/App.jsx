@@ -1,4 +1,5 @@
 import Dock from './components/Dock.jsx'
+import Hero from './components/Hero.jsx'
 import Section from './components/Section.jsx'
 import Slot from './components/Slot.jsx'
 import TopBar from './components/TopBar.jsx'
@@ -16,7 +17,7 @@ export default function App() {
       <TopBar />
       <main className="page">
         <Section id="home" ariaLabel="Introduction">
-          <Slot minHeight={420}>Hero · location + clock, avatar, name, intro, actions</Slot>
+          <Hero />
         </Section>
 
         <Section
