@@ -1,0 +1,90 @@
+/* Stack — a row of tool icons with a name label on hover (like the dock, but underneath). */
+
+.stack {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 28px;
+  margin: 0;
+  padding-bottom: 28px; /* room for the label so it doesn't collide with what's below */
+}
+
+/* No frame: the logo itself is the icon, like app icons in a row.
+   Logos with their own background (rounded square, circle) keep that shape. */
+.stack__item {
+  position: relative;
+  display: grid;
+  place-items: center;
+  width: 48px;
+  height: 48px;
+  text-decoration: none;
+}
+
+.stack__img,
+.stack__fallback {
+  transition: transform var(--dur-hover) var(--ease-out);
+}
+
+.stack__img {
+  width: 100%;
+  height: 100%;
+  object-fit: contain;
+}
+
+/* Only the no-logo fallback gets a tile, so the letter isn't floating alone. */
+.stack__fallback {
+  display: grid;
+  place-items: center;
+  width: 100%;
+  height: 100%;
+  border-radius: var(--radius-control-lg);
+  background: var(--surface-muted);
+  font-family: var(--font-mono);
+  font-size: var(--fs-meta);
+  font-weight: 500;
+  color: var(--text-muted);
+}
+
+/* Name label below the icon. */
+.stack__tooltip {
+  position: absolute;
+  top: calc(100% + 10px);
+  left: 50%;
+  /* The icon box is a centering grid, which would otherwise re-center this
+     label inside the leftover space; start-align so left/top mean what they say. */
+  place-self: start;
+  translate: -50% -4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  background: var(--text);
+  color: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  line-height: 1.4;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+  pointer-events: none;
+  opacity: 0;
+  transition:
+    opacity var(--dur-hover) ease,
+    translate var(--dur-hover) var(--ease-out);
+}
+
+/* Hover effects only on devices that actually hover (not touch screens). */
+@media (hover: hover) {
+  /* Same lift-and-grow as the dock icons. */
+  .stack__item:hover .stack__img,
+  .stack__item:hover .stack__fallback {
+    transform: translateY(-4px) scale(1.12);
+  }
+  .stack__item:hover .stack__tooltip {
+    opacity: 1;
+    translate: -50% 0;
+  }
+}
+
+/* Keyboard users get the label too. */
+.stack__item:focus-visible .stack__tooltip {
+  opacity: 1;
+  translate: -50% 0;
+}

@@ -4,10 +4,12 @@ import Hero from './components/Hero.jsx'
 import ProjectFan from './components/ProjectFan.jsx'
 import Section from './components/Section.jsx'
 import Slot from './components/Slot.jsx'
+import Stack from './components/Stack.jsx'
 import TopBar from './components/TopBar.jsx'
 import { EXPERIENCE } from './data/experience.js'
 import { PROJECTS } from './data/projects.js'
 import { SECTIONS, SECTION_IDS } from './data/sections.js'
+import { STACK } from './data/stack.js'
 import { useActiveSection } from './hooks/useActiveSection.js'
 import { useScrollToHash } from './hooks/useScrollToHash.js'
 
@@ -41,7 +43,7 @@ export default function App() {
         </Section>
 
         <Section id="stack" label="Stack">
-          <Slot minHeight={220}>Stack rows · label + chips</Slot>
+          <Stack items={STACK} />
         </Section>
 
         <Section
