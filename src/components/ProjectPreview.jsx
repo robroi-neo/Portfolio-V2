@@ -13,6 +13,8 @@ export default function ProjectPreview({ project, className = '' }) {
         className={`preview preview--image ${className}`}
         src={project.image}
         alt={`Screenshot of ${project.title}`}
+        loading="lazy"
+        decoding="async"
         onError={() => setFailed(true)}
       />
     )

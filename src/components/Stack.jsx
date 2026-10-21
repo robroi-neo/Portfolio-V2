@@ -15,6 +15,10 @@ function StackLogo({ name, logo, logoDark }) {
           className={`stack__img${logoDark ? ' stack__img--light' : ''}`}
           src={logo}
           alt=""
+          width="48"
+          height="48"
+          loading="lazy"
+          decoding="async"
           onError={() => setFailed(true)}
         />
         {logoDark && (
@@ -22,6 +26,10 @@ function StackLogo({ name, logo, logoDark }) {
             className="stack__img stack__img--dark"
             src={logoDark}
             alt=""
+            width="48"
+            height="48"
+            loading="lazy"
+            decoding="async"
             onError={() => setFailed(true)}
           />
         )}

@@ -1,36 +1,68 @@
+import { useEffect, useRef, useState } from 'react'
 import './ProjectModal.css'
 import ProjectPreview from './ProjectPreview.jsx'
 import { GithubIcon, XIcon } from './icons.jsx'
 
 /**
  * Full-screen popup for one project: big screenshot, title, description,
- * and a GitHub link when there is one.
+ * and a GitHub link when there is one. Fades in when `project` is set; every
+ * way of closing (X, backdrop, Escape) fades it out, then calls `onClose`.
  *
- * Built on the native <dialog>. ProjectFan opens it with showModal(), which
- * gives us the backdrop, focus kept inside, and focus returned to the card.
- * Every way of closing (X, backdrop, Escape) goes through `onRequestClose`
- * so ProjectFan can animate it; `onClosed` fires once it's actually closed.
+ * Built on the native <dialog>: showModal() gives us the backdrop, focus
+ * kept inside, and focus returned to the card afterwards.
  */
-export default function ProjectModal({ dialogRef, project, onRequestClose, onClosed }) {
-  // A click that lands on the <dialog> itself (not its content) is a backdrop click.
-  function handleClick(event) {
-    if (event.target === event.currentTarget) onRequestClose()
+export default function ProjectModal({ project, onClose }) {
+  const dialogRef = useRef(null)
+  const [closing, setClosing] = useState(false)
+
+  useEffect(() => {
+    const dialog = dialogRef.current
+    if (project && !dialog.open) dialog.showModal()
+  }, [project])
+
+  // Start the fade-out; the dialog really closes when it finishes (below).
+  function requestClose() {
+    setClosing(true)
   }
 
-  // Escape: stop the instant native close and use the animated one instead.
+  // Safety net: if the fade-out animation never reports back, close anyway.
+  useEffect(() => {
+    if (!closing) return
+    const timer = setTimeout(() => dialogRef.current?.close(), 400)
+    return () => clearTimeout(timer)
+  }, [closing])
+
+  function handleAnimationEnd(event) {
+    if (closing && event.animationName === 'modal-out') dialogRef.current.close()
+  }
+
+  // Fires once the dialog is actually closed (by us, or natively).
+  function handleClose() {
+    setClosing(false)
+    onClose()
+  }
+
+  // A click that lands on the <dialog> itself (not its content) is a backdrop click.
+  function handleClick(event) {
+    if (event.target === event.currentTarget) requestClose()
+  }
+
+  // Escape: stop the instant native close and fade out instead.
   function handleCancel(event) {
     event.preventDefault()
-    onRequestClose()
+    requestClose()
   }
 
   return (
     <dialog
       ref={dialogRef}
-      className="project-modal"
+      // allow-motion: the fade is gentle, so it plays even with reduced motion on.
+      className={`project-modal allow-motion${closing ? ' is-closing' : ''}`}
       aria-labelledby="project-modal-title"
       onClick={handleClick}
       onCancel={handleCancel}
-      onClose={onClosed}
+      onClose={handleClose}
+      onAnimationEnd={handleAnimationEnd}
     >
       {project && (
         <div className="project-modal__body">
@@ -38,7 +70,7 @@ export default function ProjectModal({ dialogRef, project, onRequestClose, onClo
             type="button"
             className="project-modal__close"
             aria-label="Close"
-            onClick={onRequestClose}
+            onClick={requestClose}
           >
             <XIcon size={18} />
           </button>

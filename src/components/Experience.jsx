@@ -11,6 +11,8 @@ function CompanyLogo({ company, logo }) {
         className="experience__logo"
         src={logo}
         alt=""
+        loading="lazy"
+        decoding="async"
         width="20"
         height="20"
         onError={() => setFailed(true)}

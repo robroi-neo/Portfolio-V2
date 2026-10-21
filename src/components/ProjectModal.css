@@ -11,65 +11,54 @@
   overflow: visible;
 }
 
+/* No backdrop blur: it's barely visible under 92% black and has to be
+   redrawn every frame of the open/close animation, which made it stutter. */
 .project-modal::backdrop {
   background: rgb(17 17 17 / 0.92);
-  -webkit-backdrop-filter: blur(4px);
-  backdrop-filter: blur(4px);
 }
 
+/* ---------- Fade in / out ----------
+   Only opacity + transform, which the browser can animate on the GPU.
+   Closing: ProjectModal adds .is-closing, waits for modal-out to finish,
+   then actually closes the dialog. */
 .project-modal[open] {
-  animation: modal-in var(--dur-window) var(--ease-out);
+  animation: modal-in 0.25s var(--ease-out);
 }
 
 .project-modal[open]::backdrop {
-  animation: backdrop-in var(--dur-window) ease;
+  animation: backdrop-in 0.25s ease;
 }
 
-/* ---------- Card → popup morph (View Transitions) ----------
-   The frame wears the shared name while open; ProjectFan gives it to the
-   card otherwise. The browser animates position + size between the two. */
-.project-modal[open] .project-modal__frame {
-  view-transition-name: project-morph;
+.project-modal.is-closing {
+  animation: modal-out 0.18s ease-in forwards;
 }
 
-::view-transition-group(project-morph) {
-  animation-duration: var(--dur-fan);
-  animation-timing-function: var(--ease-out);
-  overflow: clip;
-  border-radius: var(--radius-window);
-}
-
-/* Card and frame have different shapes: fill the box instead of stretching. */
-::view-transition-old(project-morph),
-::view-transition-new(project-morph) {
-  height: 100%;
-  object-fit: cover;
-  object-position: top;
-}
-
-/* Backdrop + caption fade alongside the morph. */
-::view-transition-old(root),
-::view-transition-new(root) {
-  animation-duration: var(--dur-window);
-}
-
-/* Browsers with View Transitions get the morph, so skip the fallback pop-in. */
-@supports (view-transition-name: none) {
-  .project-modal[open],
-  .project-modal[open]::backdrop {
-    animation: none;
-  }
+.project-modal.is-closing::backdrop {
+  animation: backdrop-out 0.18s ease-in forwards;
 }
 
 @keyframes modal-in {
   from {
     opacity: 0;
-    transform: translateY(12px) scale(0.98);
+    transform: scale(0.97);
+  }
+}
+
+@keyframes modal-out {
+  to {
+    opacity: 0;
+    transform: scale(0.98);
   }
 }
 
 @keyframes backdrop-in {
   from {
+    opacity: 0;
+  }
+}
+
+@keyframes backdrop-out {
+  to {
     opacity: 0;
   }
 }

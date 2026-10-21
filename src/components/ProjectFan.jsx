@@ -1,46 +1,20 @@
-import { useRef, useState } from 'react'
-import { flushSync } from 'react-dom'
-import { withViewTransition } from '../lib/viewTransition.js'
+import { useState } from 'react'
 import './ProjectFan.css'
 import ProjectModal from './ProjectModal.jsx'
 import ProjectPreview from './ProjectPreview.jsx'
 
-// Shared view-transition-name: the clicked card and the popup's frame take
-// turns wearing it, so the browser morphs one into the other.
-const MORPH_NAME = 'project-morph'
-
 /**
  * Overlapping project cards. Hovering the group spreads them out; clicking a
- * card grows it into ProjectModal. On phones the cards stack in a column.
+ * card opens it in ProjectModal. On phones the cards stack in a column.
  */
 export default function ProjectFan({ projects }) {
   const [selected, setSelected] = useState(null)
-  const dialogRef = useRef(null)
-  const cardRef = useRef(null) // the card that opened the popup, to shrink back into
   const middle = (projects.length - 1) / 2
 
-  function openProject(project, card) {
-    cardRef.current = card
-    card.style.viewTransitionName = MORPH_NAME // "before" snapshot: the card
-    withViewTransition(() => {
-      card.style.viewTransitionName = '' // hand the name over to the popup frame
-      flushSync(() => setSelected(project)) // render the popup content right now
-      dialogRef.current.showModal()
-    })
-  }
-
-  function closeProject() {
-    const card = cardRef.current
-    withViewTransition(() => {
-      dialogRef.current.close()
-      if (card) card.style.viewTransitionName = MORPH_NAME // "after" snapshot: the card again
-    }).finally(() => {
-      if (card) card.style.viewTransitionName = ''
-    })
-  }
-
   return (
-    <div className="fan breakout dot-grid">
+    // is-open keeps the fan spread while the popup covers it, so the cards
+    // don't fold and re-spread behind it.
+    <div className={`fan breakout dot-grid${selected ? ' is-open' : ''}`}>
       <ul className="fan__list" role="list" style={{ '--count': projects.length }}>
         {projects.map((project, i) => {
           // Distance from the middle card: -1.5, -0.5, 0.5, 1.5 for four cards.
@@ -49,14 +23,14 @@ export default function ProjectFan({ projects }) {
           return (
             <li
               key={project.id}
-              className="fan__item"
+              className="fan__item allow-motion"
               style={{ '--offset': offset, '--drop': Math.abs(offset) }}
             >
               <button
                 type="button"
-                className={`fan__card fan__card--${project.theme}`}
+                className={`fan__card fan__card--${project.theme} allow-motion`}
                 aria-haspopup="dialog"
-                onClick={(event) => openProject(project, event.currentTarget)}
+                onClick={() => setSelected(project)}
               >
                 <span className="fan__dots" aria-hidden="true">
                   <span />
@@ -80,12 +54,7 @@ export default function ProjectFan({ projects }) {
         })}
       </ul>
 
-      <ProjectModal
-        dialogRef={dialogRef}
-        project={selected}
-        onRequestClose={closeProject}
-        onClosed={() => setSelected(null)}
-      />
+      <ProjectModal project={selected} onClose={() => setSelected(null)} />
     </div>
   )
 }

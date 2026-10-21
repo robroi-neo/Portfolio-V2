@@ -10,6 +10,9 @@
 
 html {
   scroll-behavior: smooth;
+  /* Always reserve the scrollbar's space, so locking scroll (project popup)
+     doesn't make the page jump sideways when the scrollbar disappears. */
+  scrollbar-gutter: stable;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
 }
@@ -83,14 +86,16 @@ select {
   border-radius: 4px;
 }
 
-/* Reduced motion (design.md §8): no animations, instant scroll. */
+/* Reduced motion (design.md §8): no animations, instant scroll.
+   Elements with class="allow-motion" are exempt — use it only for gentle,
+   non-intrusive motion (e.g. the project fan spreading out). */
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
   }
-  *,
-  *::before,
-  *::after {
+  *:not(.allow-motion),
+  *:not(.allow-motion)::before,
+  *:not(.allow-motion)::after {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;

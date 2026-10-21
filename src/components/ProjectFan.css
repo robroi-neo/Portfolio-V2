@@ -7,7 +7,22 @@
   --rest-gap: clamp(80px, 11vw, 140px);
   --gap: var(--rest-gap);
   --tilt: 5deg; /* rotation per step from the middle */
-  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1); /* fast start, long soft landing */
+  --ease-smooth: cubic-bezier(
+    0.22,
+    1,
+    0.36,
+    1
+  ); /* fast start, long soft landing (card lift) */
+
+  /* Fan spread timing */
+  --fan-open: 0.6s; /* how long spreading out takes */
+  --fan-close: 0.6s; /* how long folding back takes */
+  --fan-ease: cubic-bezier(
+    0.39,
+    0.575,
+    0.565,
+    1
+  ); /* gentle ease-out: visible glide, soft stop */
   padding-block: 30px;
   overflow-x: clip;
 }
@@ -17,7 +32,10 @@
    it still count as hovered, so the fan doesn't collapse under the cursor. */
 .fan__list {
   position: relative;
-  width: min(100%, calc(var(--card-w) + (var(--count) - 1) * var(--rest-gap) + 48px));
+  width: min(
+    100%,
+    calc(var(--card-w) + (var(--count) - 1) * var(--rest-gap) + 48px)
+  );
   height: 320px;
   margin: 0 auto;
 }
@@ -27,21 +45,24 @@
   top: 50%;
   left: 50%;
   width: var(--card-w);
-  transform: translate(-50%, -50%)
-    translateX(calc(var(--offset) * var(--gap)))
+  transform: translate(-50%, -50%) translateX(calc(var(--offset) * var(--gap)))
     translateY(calc(var(--drop) * 14px))
     rotate(calc(var(--offset) * var(--tilt)));
   will-change: transform;
-  /* Cards further from the middle start a touch later, so the fan unfolds
-     like a hand of cards instead of all moving in lockstep. */
+  /* Folding back (this is the resting state's transition, so it's used on the
+     way back). Cards further from the middle move a touch later, like a hand
+     of cards. */
   transition:
-    transform 1.2s var(--ease-smooth) calc(var(--drop) * 25ms),
-    z-index 0s 0.7s; /* when leaving, drop behind neighbours only after shrinking */
+    transform var(--fan-close) var(--fan-ease) calc(var(--drop) * 25ms),
+    z-index 0s 0.6s; /* drop behind neighbours only after shrinking back */
 }
 
-/* Spread out while the pointer (or keyboard focus) is in the fan. */
+/* Spread out while the pointer (or keyboard focus) is in the fan.
+   :focus-visible = keyboard focus only, so a mouse click (which also focuses
+   the card) doesn't keep the fan open after the cursor leaves. */
 .fan:has(.fan__list:hover),
-.fan:focus-within {
+.fan:has(:focus-visible),
+.fan.is-open {
   /* As wide as fits: (screen − card − margin) ÷ 3 gaps, capped at 260px. */
   --gap: clamp(100px, calc((100vw - var(--card-w) - 72px) / 3), 260px);
   --tilt: 1.5deg;
@@ -49,15 +70,16 @@
 
 /* Hovered/focused card comes to the front. */
 .fan__item:hover,
-.fan__item:focus-within {
+.fan__item:has(:focus-visible) {
   z-index: 1;
 }
 
-/* Spreading out: same slow timing as closing back up. */
+/* Spreading out: starts right away and glides open slowly. */
 .fan:has(.fan__list:hover) .fan__item,
-.fan:focus-within .fan__item {
+.fan:has(:focus-visible) .fan__item,
+.fan.is-open .fan__item {
   transition:
-    transform 1.2s var(--ease-smooth) calc(var(--drop) * 25ms),
+    transform var(--fan-open) var(--fan-ease) calc(var(--drop) * 40ms),
     z-index 0s; /* come to the front immediately */
 }
 
@@ -72,7 +94,9 @@
   padding: 14px 16px 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius-window);
-  box-shadow: var(--shadow-card), 0 12px 32px rgb(0 0 0 / 0.08);
+  box-shadow:
+    var(--shadow-card),
+    0 12px 32px rgb(0 0 0 / 0.08);
   text-align: left;
   cursor: pointer;
   overflow: hidden;
@@ -85,7 +109,9 @@
 @media (hover: hover) {
   .fan__card:hover {
     transform: translateY(-12px) scale(1.06);
-    box-shadow: var(--shadow-card), 0 24px 48px rgb(0 0 0 / 0.16);
+    box-shadow:
+      var(--shadow-card),
+      0 24px 48px rgb(0 0 0 / 0.16);
   }
 }
 
