@@ -31,6 +31,16 @@
   object-fit: contain;
 }
 
+/* Entries with a logoDark: show the one that matches the theme. */
+.stack__img--dark,
+:root[data-theme='dark'] .stack__img--light {
+  display: none;
+}
+
+:root[data-theme='dark'] .stack__img--dark {
+  display: block;
+}
+
 /* Only the no-logo fallback gets a tile, so the letter isn't floating alone. */
 .stack__fallback {
   display: grid;

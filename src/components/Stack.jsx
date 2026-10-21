@@ -1,12 +1,32 @@
 import { useState } from 'react'
 import './Stack.css'
 
-/** The logo, or the tool's first letter when there's no logo (or it fails to load). */
-function StackLogo({ name, logo }) {
+/**
+ * The logo, or the tool's first letter when there's no logo (or it fails to load).
+ * With `logoDark`, both are rendered and CSS shows the one matching the theme.
+ */
+function StackLogo({ name, logo, logoDark }) {
   const [failed, setFailed] = useState(false)
 
   if (logo && !failed) {
-    return <img className="stack__img" src={logo} alt="" onError={() => setFailed(true)} />
+    return (
+      <>
+        <img
+          className={`stack__img${logoDark ? ' stack__img--light' : ''}`}
+          src={logo}
+          alt=""
+          onError={() => setFailed(true)}
+        />
+        {logoDark && (
+          <img
+            className="stack__img stack__img--dark"
+            src={logoDark}
+            alt=""
+            onError={() => setFailed(true)}
+          />
+        )}
+      </>
+    )
   }
   return <span className="stack__fallback">{name.charAt(0).toUpperCase()}</span>
 }
@@ -15,10 +35,10 @@ function StackLogo({ name, logo }) {
 export default function Stack({ items }) {
   return (
     <ul className="stack" role="list">
-      {items.map(({ id, name, logo, url }) => {
+      {items.map(({ id, name, logo, logoDark, url }) => {
         const content = (
           <>
-            <StackLogo name={name} logo={logo} />
+            <StackLogo name={name} logo={logo} logoDark={logoDark} />
             <span className="stack__tooltip" aria-hidden="true">
               {name}
             </span>

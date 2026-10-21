@@ -9,7 +9,6 @@
 }
 
 html {
-  color-scheme: light; /* the site is light-only by design */
   scroll-behavior: smooth;
   -webkit-text-size-adjust: 100%;
   text-size-adjust: 100%;
@@ -74,7 +73,7 @@ select {
 
 ::selection {
   background: var(--accent);
-  color: var(--text);
+  color: var(--on-accent);
 }
 
 /* Keyboard focus ring — visible only when navigating by keyboard. */
@@ -95,6 +94,35 @@ select {
     animation-duration: 0.01ms !important;
     animation-iteration-count: 1 !important;
     transition-duration: 0.01ms !important;
+  }
+}
+
+/* ---------- Theme switch: circle spreading from the toggle ----------
+   During a theme change (see useTheme) the browser shows a snapshot of the
+   old page and the live new page. The old one just sits still; the new one
+   is revealed by a growing circle centered on the sun/moon button.
+
+   useTheme sets the center (--theme-x/y) and the final radius
+   (--theme-r-end, enough to cover the farthest corner).
+
+   Why clip-path and not a soft gradient mask: a mask has to be redrawn
+   full-screen every frame (laggy); a clip-path circle is cheap to redraw. */
+.theme-transition::view-transition-old(root) {
+  animation: none;
+  mix-blend-mode: normal;
+}
+
+.theme-transition::view-transition-new(root) {
+  mix-blend-mode: normal;
+  animation: theme-reveal 0.9s cubic-bezier(0.45, 0, 0.55, 1) both;
+}
+
+@keyframes theme-reveal {
+  from {
+    clip-path: circle(0px at var(--theme-x) var(--theme-y));
+  }
+  to {
+    clip-path: circle(var(--theme-r-end) at var(--theme-x) var(--theme-y));
   }
 }
 

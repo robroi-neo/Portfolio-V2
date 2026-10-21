@@ -17,6 +17,38 @@
   text-transform: uppercase;
 }
 
+.topbar__right {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+}
+
+/* Small icon button; the negative margin keeps a comfy tap area without
+   making the thin bar taller or pushing it off the column edge. */
+.topbar__theme {
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  margin: -8px -8px -8px 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-control);
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+  transition:
+    background-color var(--dur-hover) ease,
+    color var(--dur-hover) ease;
+}
+
+@media (hover: hover) {
+  .topbar__theme:hover {
+    background: var(--surface-active);
+    color: var(--text);
+  }
+}
+
 .topbar__clock {
   display: inline-flex;
   align-items: center;

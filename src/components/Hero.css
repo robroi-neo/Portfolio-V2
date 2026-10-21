@@ -13,7 +13,7 @@
   width: 80px;
   height: 80px;
   border-radius: var(--radius-card);
-  background: linear-gradient(145deg, #e4e4df, #c9c9c3);
+  background: linear-gradient(145deg, var(--avatar-from), var(--avatar-to));
   box-shadow: inset 0 0 0 1px rgb(0 0 0 / 0.06);
   font-family: var(--font-mono);
   font-size: var(--fs-meta);
@@ -68,7 +68,7 @@
   padding: 2px 8px;
   border-radius: 6px;
   background: var(--accent);
-  color: var(--text);
+  color: var(--on-accent);
   font-weight: 500;
 }
 
@@ -116,7 +116,7 @@
 
 @media (hover: hover) {
   .btn--primary:hover {
-    background: #333;
+    background: var(--primary-hover);
   }
   .btn--secondary:hover {
     background: var(--surface-muted);

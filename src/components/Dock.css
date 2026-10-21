@@ -10,7 +10,7 @@
   padding: 6px;
   border: 1px solid var(--border);
   border-radius: var(--radius-dock);
-  background: rgb(255 255 255 / 0.88);
+  background: var(--dock-bg);
   -webkit-backdrop-filter: blur(12px) saturate(1.4);
   backdrop-filter: blur(12px) saturate(1.4);
   box-shadow: var(--shadow-dock);

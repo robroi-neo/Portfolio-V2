@@ -17,7 +17,16 @@
   --text-muted: #5e5e5e;
   --label: #767676; /* passes 4.5:1 on --bg — don't go lighter */
   --accent: #d4f25a; /* lime — use sparingly */
+  --on-accent: #1a1a1a; /* text on lime — stays dark in both themes */
   --status: #22c55e;
+
+  /* Component colors that differ per theme */
+  --dock-bg: rgb(255 255 255 / 0.88);
+  --primary-hover: #333333; /* dark button hover */
+  --avatar-from: #e4e4df;
+  --avatar-to: #c9c9c3;
+
+  color-scheme: light; /* native scrollbars + form controls */
 
   /* ---------- Color: loud (doors only) ---------- */
   --loud-bg: #111111;
@@ -76,6 +85,35 @@
   --z-dock: 50;
   --z-window: 100;
   --z-toast: 150;
+}
+
+/* ---------- Dark theme ----------
+   Set by <html data-theme="dark"> (see index.html + useTheme).
+   Warm near-blacks to match the warm off-whites above. Text colors all pass
+   4.5:1 on --bg. The lime accent and the loud palette stay the same. */
+:root[data-theme='dark'] {
+  --bg: #111110;
+  --surface: #1a1a18;
+  --surface-muted: #23231f;
+  --surface-active: #2a2a26;
+  --grid-dot: #2b2b27;
+  --border: #262622;
+  --border-strong: #33332e;
+  --text: #ededea;
+  --text-body: #c9c9c3;
+  --text-muted: #a1a19a;
+  --label: #8a8a83;
+
+  --dock-bg: rgb(26 26 24 / 0.82);
+  --primary-hover: #d6d6d0;
+  --avatar-from: #2a2a26;
+  --avatar-to: #1d1d1a;
+
+  --shadow-card: 0 1px 2px rgb(0 0 0 / 0.3), 0 4px 12px rgb(0 0 0 / 0.25);
+  --shadow-dock: 0 1px 2px rgb(0 0 0 / 0.4), 0 8px 24px rgb(0 0 0 / 0.4);
+  --shadow-window: 0 24px 64px rgb(0 0 0 / 0.5), 0 2px 8px rgb(0 0 0 / 0.3);
+
+  color-scheme: dark;
 }
 
 @media (min-width: 640px) {

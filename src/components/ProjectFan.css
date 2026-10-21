@@ -89,14 +89,21 @@
   }
 }
 
+/* Cards are "physical" light or dark objects, so they keep their own colors
+   whatever the page theme is. The token overrides restyle the chips inside. */
 .fan__card--light {
-  background: var(--surface);
-  color: var(--text);
+  --surface-muted: #edede8;
+  --text-muted: #5e5e5e;
+  background: #ffffff;
+  border-color: #e6e6e1;
+  color: #1a1a1a;
 }
 
 .fan__card--dark {
+  --surface-muted: #23231f;
+  --text-muted: #a1a19a;
   background: var(--loud-bg);
-  border-color: #222;
+  border-color: #2a2a28;
   color: var(--loud-text);
 }
 
@@ -135,7 +142,7 @@
 
 .chip--accent {
   background: var(--accent);
-  color: var(--text);
+  color: var(--on-accent);
 }
 
 /* Preview takes whatever height is left under the title and tags. */
