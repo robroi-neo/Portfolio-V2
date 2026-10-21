@@ -13,7 +13,6 @@ export const STACK = [
   { id: 'javascript', name: 'JavaScript', logo: 'https://cdn.simpleicons.org/javascript', url: 'https://developer.mozilla.org/docs/Web/JavaScript' },
   { id: 'laravel', name: 'Laravel', logo: 'https://cdn.simpleicons.org/laravel', url: 'https://laravel.com' },
   { id: 'flutter', name: 'Flutter', logo: 'https://cdn.simpleicons.org/flutter', url: 'https://flutter.dev' },
-  { id: 'supabase', name: 'Supabase', logo: 'https://cdn.simpleicons.org/supabase', url: 'https://supabase.com' },
   { id: 'firebase', name: 'Firebase', logo: 'https://cdn.simpleicons.org/firebase', url: 'https://firebase.google.com' },
   { id: 'python', name: 'Python', logo: 'https://cdn.simpleicons.org/python', url: 'https://python.org' },
   {
@@ -23,4 +22,5 @@ export const STACK = [
     logoDark: 'https://cdn.simpleicons.org/github/ededea', // simpleicons: /<name>/<hex color>
     url: 'https://github.com',
   },
+  { id: 'claude-code', name: 'Claude Code', logo: 'https://cdn.simpleicons.org/claude', url: 'https://claude.com/claude-code' },
 ]

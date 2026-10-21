@@ -1,3 +1,4 @@
+import Contact from './components/Contact.jsx'
 import Dock from './components/Dock.jsx'
 import Experience from './components/Experience.jsx'
 import Hero from './components/Hero.jsx'
@@ -58,8 +59,12 @@ export default function App() {
           <Slot minHeight={140}>Arcade door</Slot>
         </Section>
 
-        <Section id="contact" label="Contact">
-          <Slot minHeight={320}>Form · link rows · signature footer</Slot>
+        <Section
+          id="contact"
+          label="Contact"
+          intro="You can contact me using the form or via the links below."
+        >
+          <Contact />
         </Section>
       </main>
 

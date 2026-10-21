@@ -79,50 +79,6 @@
   gap: 12px;
 }
 
-/* ---------- Buttons (shared look; reuse for the contact form later) ---------- */
-
-.btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  min-height: var(--tap);
-  padding: 0 18px;
-  border: 1px solid transparent;
-  border-radius: var(--radius-control);
-  font-size: 0.875rem;
-  font-weight: 500;
-  line-height: 1;
-  text-decoration: none;
-  cursor: pointer;
-  transition:
-    background-color var(--dur-press) ease,
-    transform var(--dur-press) ease;
-}
-
-.btn:active {
-  transform: scale(0.97);
-}
-
-.btn--primary {
-  background: var(--text);
-  color: var(--surface);
-}
-
-.btn--secondary {
-  background: var(--surface);
-  border-color: var(--border-strong);
-  color: var(--text);
-}
-
-@media (hover: hover) {
-  .btn--primary:hover {
-    background: var(--primary-hover);
-  }
-  .btn--secondary:hover {
-    background: var(--surface-muted);
-  }
-}
-
 .hero__hint {
   display: flex;
   align-items: center;
@@ -130,16 +86,6 @@
   margin-top: -8px; /* sit closer to the buttons above than to anything below */
   font-size: var(--fs-meta);
   color: var(--label);
-}
-
-kbd {
-  padding: 1px 6px;
-  border: 1px solid var(--border-strong);
-  border-radius: 6px;
-  background: var(--surface);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  color: var(--text-muted);
 }
 
 /* No keyboard shortcut on touch screens, so hide the hint. */

@@ -4,7 +4,9 @@
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
-  gap: 28px;
+  /* 9 icons × 48px + 8 gaps × 24px = 624px, fits the 640px column on one row.
+     Narrower screens still wrap. */
+  gap: 24px;
   margin: 0;
   padding-bottom: 28px; /* room for the label so it doesn't collide with what's below */
 }

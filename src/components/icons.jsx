@@ -146,6 +146,34 @@ export function ClockIcon(props) {
   )
 }
 
+export function LinkedinIcon(props) {
+  return (
+    <Icon {...props}>
+      <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z" />
+      <rect width="4" height="12" x="2" y="9" />
+      <circle cx="4" cy="4" r="2" />
+    </Icon>
+  )
+}
+
+/** The X (Twitter) logo — a filled shape, so it doesn't use the line-icon wrapper. */
+export function XLogoIcon({ size = 20 }) {
+  return (
+    <svg width={size} height={size} viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false">
+      <path d="M18.9 1.15h3.68l-8.04 9.19L24 22.85h-7.41l-5.8-7.58-6.64 7.58H.47l8.6-9.83L0 1.15h7.59l5.24 6.93ZM17.61 20.64h2.04L6.49 3.24H4.3Z" />
+    </svg>
+  )
+}
+
+export function ArrowUpRightIcon(props) {
+  return (
+    <Icon {...props}>
+      <path d="M7 7h10v10" />
+      <path d="M7 17 17 7" />
+    </Icon>
+  )
+}
+
 export function MailIcon(props) {
   return (
     <Icon {...props}>

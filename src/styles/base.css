@@ -131,6 +131,61 @@ select {
   }
 }
 
+/* ---------- Buttons (shared: hero actions, contact form) ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: var(--tap);
+  padding: 0 18px;
+  border: 1px solid transparent;
+  border-radius: var(--radius-control);
+  font-size: 0.875rem;
+  font-weight: 500;
+  line-height: 1;
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--dur-press) ease,
+    transform var(--dur-press) ease;
+}
+
+.btn:active {
+  transform: scale(0.97);
+}
+
+.btn--primary {
+  background: var(--text);
+  color: var(--surface);
+}
+
+.btn--secondary {
+  background: var(--surface);
+  border-color: var(--border-strong);
+  color: var(--text);
+}
+
+@media (hover: hover) {
+  .btn--primary:hover {
+    background: var(--primary-hover);
+  }
+  .btn--secondary:hover {
+    background: var(--surface-muted);
+  }
+}
+
+/* Keyboard key, e.g. <kbd>C</kbd> in "press C to copy". */
+kbd {
+  padding: 1px 6px;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--surface);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--text-muted);
+}
+
 /* ---------- Text helpers used across sections ---------- */
 
 /* Small mono uppercase words, e.g. WORK, STACK (no numbering). */

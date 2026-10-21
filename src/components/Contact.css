@@ -1,0 +1,165 @@
+/* Contact — form, link rows, signature footer. */
+
+.contact {
+  display: grid;
+  gap: 48px;
+}
+
+/* ---------- Form ---------- */
+
+.contact__form {
+  display: grid;
+  gap: 12px;
+}
+
+.contact__row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.field {
+  width: 100%;
+  padding: 12px 14px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-control);
+  background: var(--surface);
+  color: var(--text);
+  font-size: 0.9375rem;
+  line-height: 1.5;
+  transition: border-color var(--dur-hover) ease;
+}
+
+.field::placeholder {
+  color: var(--label);
+}
+
+.field:focus-visible {
+  outline: none;
+  border-color: var(--text-muted);
+}
+
+.field--message {
+  min-height: 180px;
+  resize: vertical;
+}
+
+/* Off-screen spam trap (see Contact.jsx). */
+.contact__honeypot {
+  position: absolute;
+  left: -9999px;
+  width: 1px;
+  height: 1px;
+  opacity: 0;
+}
+
+.contact__actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 12px;
+  margin-top: 4px;
+}
+
+.contact__actions .btn {
+  border-radius: var(--radius-pill);
+}
+
+.contact__actions .btn:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}
+
+.contact__hint {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--fs-meta);
+  color: var(--label);
+}
+
+/* Phones: Enter makes a new line there, so don't advertise it. */
+@media (hover: none) {
+  .contact__hint {
+    display: none;
+  }
+}
+
+.contact__status {
+  min-height: 1.5em; /* reserve the line so the page doesn't jump */
+  font-size: var(--fs-meta);
+  color: var(--text-muted);
+}
+
+.contact__status--error {
+  color: #d9534f;
+}
+
+/* ---------- Link rows ---------- */
+
+.contact__links {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+}
+
+.contact__link {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  padding: 8px 0;
+  color: var(--text-muted);
+  text-decoration: none;
+  transition: color var(--dur-link) ease;
+}
+
+.contact__link-label,
+.contact__link-value {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.contact__link-value {
+  gap: 10px;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  text-align: right;
+}
+
+.contact__link-value svg {
+  flex: none;
+  transition: transform var(--dur-link) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .contact__link:hover {
+    color: var(--text);
+  }
+  .contact__link:hover .contact__link-value svg {
+    transform: translate(2px, -2px);
+  }
+}
+
+/* ---------- Footer ---------- */
+
+.contact__footer {
+  display: grid;
+  justify-items: center;
+  gap: 24px;
+  padding-top: 16px;
+}
+
+.contact__credit {
+  font-size: var(--fs-meta);
+  color: var(--label);
+}
+
+/* ---------- Narrow screens ---------- */
+
+@media (max-width: 479px) {
+  .contact__row {
+    grid-template-columns: 1fr;
+  }
+}
