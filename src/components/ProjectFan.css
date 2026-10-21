@@ -2,7 +2,9 @@
 
 .fan {
   --card-w: 280px;
-  --rest-gap: 140px; /* horizontal distance between cards at rest */
+  /* Horizontal distance between cards at rest. Shrinks on narrower screens so
+     the fan stays compact in the middle just before it becomes a column. */
+  --rest-gap: clamp(80px, 11vw, 140px);
   --gap: var(--rest-gap);
   --tilt: 5deg; /* rotation per step from the middle */
   --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1); /* fast start, long soft landing */
@@ -40,7 +42,8 @@
 /* Spread out while the pointer (or keyboard focus) is in the fan. */
 .fan:has(.fan__list:hover),
 .fan:focus-within {
-  --gap: clamp(160px, 21vw, 260px);
+  /* As wide as fits: (screen − card − margin) ÷ 3 gaps, capped at 260px. */
+  --gap: clamp(100px, calc((100vw - var(--card-w) - 72px) / 3), 260px);
   --tilt: 1.5deg;
 }
 

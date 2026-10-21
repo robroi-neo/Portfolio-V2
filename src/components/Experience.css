@@ -1,0 +1,87 @@
+/* Experience — dates on the left, role/company/description on the right. */
+
+.experience {
+  display: grid;
+  gap: 32px;
+  margin: 0;
+}
+
+.experience__item {
+  display: grid;
+  grid-template-columns: 160px 1fr;
+  gap: 24px;
+}
+
+.experience__dates {
+  padding-top: 4px; /* line up with the first line of the title */
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--label);
+  white-space: nowrap;
+}
+
+.experience__body {
+  display: grid;
+  gap: 4px;
+}
+
+.experience__title {
+  font-size: 1rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.experience__company {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  vertical-align: bottom;
+}
+
+.experience__company a {
+  text-decoration: none;
+}
+
+@media (hover: hover) {
+  .experience__company a:hover {
+    text-decoration: underline;
+    text-underline-offset: 3px;
+  }
+}
+
+.experience__logo {
+  flex: none;
+  width: 20px;
+  height: 20px;
+  border-radius: 6px;
+  object-fit: cover;
+}
+
+.experience__logo--fallback {
+  display: grid;
+  place-items: center;
+  background: var(--accent);
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.experience__description {
+  color: var(--text-muted);
+}
+
+/* Narrow screens: dates sit above each entry instead of beside it. */
+@media (max-width: 559px) {
+  .experience__item {
+    grid-template-columns: 1fr;
+    gap: 4px;
+  }
+
+  .experience__dates {
+    padding-top: 0;
+  }
+}

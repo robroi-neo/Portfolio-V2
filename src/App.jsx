@@ -1,9 +1,11 @@
 import Dock from './components/Dock.jsx'
+import Experience from './components/Experience.jsx'
 import Hero from './components/Hero.jsx'
 import ProjectFan from './components/ProjectFan.jsx'
 import Section from './components/Section.jsx'
 import Slot from './components/Slot.jsx'
 import TopBar from './components/TopBar.jsx'
+import { EXPERIENCE } from './data/experience.js'
 import { PROJECTS } from './data/projects.js'
 import { SECTIONS, SECTION_IDS } from './data/sections.js'
 import { useActiveSection } from './hooks/useActiveSection.js'
@@ -24,18 +26,21 @@ export default function App() {
 
         <Section
           id="projects"
-          label="Work"
-          heading="Selected projects"
+          label="projects"
           intro="Here are some of my proudest works so far. Click to see more."
         >
           <ProjectFan projects={PROJECTS} />
         </Section>
 
-        <Section id="experience" label="Experience" heading="Where I've worked and learned">
-          <Slot minHeight={280}>Experience entries + résumé link</Slot>
+        <Section
+          id="experience"
+          label="Experience"
+          intro="Throughout my career, I've worked on various projects, from building scalable systems to designing user-friendly interfaces. Here's a brief overview."
+        >
+          <Experience entries={EXPERIENCE} />
         </Section>
 
-        <Section id="stack" label="Stack" heading="Tools I reach for">
+        <Section id="stack" label="Stack">
           <Slot minHeight={220}>Stack rows · label + chips</Slot>
         </Section>
 
@@ -51,7 +56,7 @@ export default function App() {
           <Slot minHeight={140}>Arcade door</Slot>
         </Section>
 
-        <Section id="contact" label="Contact" heading="Say hello">
+        <Section id="contact" label="Contact">
           <Slot minHeight={320}>Form · link rows · signature footer</Slot>
         </Section>
       </main>
