@@ -24,8 +24,8 @@ export const CONTACT = {
     {
       id: 'x',
       label: 'X.com',
-      value: '@[handle]',
-      url: '', // e.g. 'https://x.com/yourhandle'
+      value: '@robneodev',
+      url: 'https://x.com/robneodev', // e.g. 'https://x.com/yourhandle'
       icon: 'x',
     },
     {

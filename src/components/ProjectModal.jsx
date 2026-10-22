@@ -17,7 +17,11 @@ export default function ProjectModal({ project, onClose }) {
 
   useEffect(() => {
     const dialog = dialogRef.current
-    if (project && !dialog.open) dialog.showModal()
+    if (project && !dialog.open) {
+      dialog.showModal()
+      // Let other parts of the page react (the music card pauses).
+      window.dispatchEvent(new Event('portfolio:window-open'))
+    }
   }, [project])
 
   // Start the fade-out; the dialog really closes when it finishes (below).

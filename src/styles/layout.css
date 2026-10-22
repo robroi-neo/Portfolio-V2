@@ -8,8 +8,9 @@
    ========================================================================== */
 
 .page {
-  /* leave room so the fixed dock never covers the last bit of content */
-  padding-bottom: calc(var(--tap) + 24px + 96px);
+  /* Leave room so the fixed dock never covers the footer:
+     dock (44px icons + 12px padding + 2px border) + its 24px offset + 24px air. */
+  padding-bottom: calc(var(--tap) + 12px + 2px + 24px + 24px);
 }
 
 .section {
@@ -35,6 +36,11 @@
 
 .section:first-child {
   padding-top: 64px;
+}
+
+/* The page's own bottom padding (above) is enough after the last section. */
+.section:last-child {
+  padding-bottom: 0;
 }
 
 .section__header {

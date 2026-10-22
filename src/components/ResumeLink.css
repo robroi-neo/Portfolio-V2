@@ -1,0 +1,18 @@
+.resume-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  justify-self: start;
+  font-size: var(--fs-meta);
+  color: var(--text);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+  text-decoration-color: var(--border-strong);
+  transition: text-decoration-color var(--dur-hover) ease;
+}
+
+@media (hover: hover) {
+  .resume-link:hover {
+    text-decoration-color: currentColor;
+  }
+}
