@@ -1,4 +1,4 @@
-import { useEffect, useId, useRef, useState } from 'react'
+import { memo, useEffect, useId, useRef, useState } from 'react'
 import { packRadius } from './useReelMotion.js'
 
 const SVG_NS = 'http://www.w3.org/2000/svg'
@@ -79,10 +79,11 @@ function Hub({ x, hubRef }) {
  * Purely visual: the reels and tape packs are animated through the refs by
  * useReelMotion.
  */
-export default function Cassette({ title, artist, hubRefs, packRefs }) {
+function Cassette({ title, artist, hubRefs, packRefs }) {
   const id = useId()
   const ribId = `${id}-rib`
   const winId = `${id}-win`
+  const sheenId = `${id}-sheen`
   const svgRef = useRef(null)
   const titleFit = useFittedTitle(svgRef, title)
   const startRadius = packRadius(1) // before the first frame: all tape on the left
@@ -99,10 +100,27 @@ export default function Cassette({ title, artist, hubRefs, packRefs }) {
         <clipPath id={winId}>
           <rect x="162" y="134" width="236" height="72" rx="36" />
         </clipPath>
+        {/* Glossy light falling on the top of the plastic (strength: --tape-sheen). */}
+        <linearGradient id={sheenId} x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" style={{ stopColor: '#fff', stopOpacity: 'var(--tape-sheen)' }} />
+          <stop offset="0.45" style={{ stopColor: '#fff', stopOpacity: 0 }} />
+        </linearGradient>
       </defs>
 
       {/* 1 Shell */}
       <rect width="560" height="350" rx="20" fill={`url(#${ribId})`} />
+      <rect width="560" height="350" rx="20" fill={`url(#${sheenId})`} />
+      {/* Edge highlight so the black shell stands out on dark backgrounds (--tape-rim). */}
+      <rect
+        x="0.75"
+        y="0.75"
+        width="558.5"
+        height="348.5"
+        rx="19.25"
+        fill="none"
+        style={{ stroke: 'var(--tape-rim)' }}
+        strokeWidth="1.5"
+      />
 
       {/* 2 Screws */}
       {[
@@ -186,3 +204,7 @@ export default function Cassette({ title, artist, hubRefs, packRefs }) {
     </svg>
   )
 }
+
+// The time display re-renders the card every second; the cassette's props
+// don't change then (reels move via refs), so skip re-rendering the SVG.
+export default memo(Cassette)

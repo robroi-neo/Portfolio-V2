@@ -55,7 +55,7 @@ export default function App() {
         <Section
           id="personal"
           label="Personal"
-          intro="In my spare time, I play games, practice guitar, and build things just for fun."
+          intro="In my spare time, I love playing games, listening to music, playing the guitar, and building fun things."
         >
           <MixtapeCard track={NOW_PLAYING} />
           <Slot className="breakout" minHeight={260}>

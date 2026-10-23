@@ -17,10 +17,23 @@
   --tape-hub: #f4f1ea;
   --tape-guard: #232323;
   --tape-hole: #0e0e0e;
+  /* Highlights: barely there on light pages, stronger in dark mode (below). */
+  --tape-rim: rgb(255 255 255 / 0.08);
+  --tape-sheen: 0.05;
+  --tape-shadow: 0 18px 30px rgb(0 0 0 / 0.18);
 
   position: relative; /* anchors the invisible Spotify player */
   display: grid;
   gap: 16px;
+}
+
+/* Dark mode: the black shell would melt into the page, so give it a
+   brighter edge, more gloss, and a soft white glow around it. */
+:root[data-theme='dark'] .mixtape {
+  --tape-rim: rgb(255 255 255 / 0.22);
+  --tape-sheen: 0.12;
+  --tape-shadow: 0 0 0 1px rgb(255 255 255 / 0.1), 0 0 28px rgb(255 255 255 / 0.08),
+    0 18px 30px rgb(0 0 0 / 0.5);
 }
 
 /* ---------- Cassette ---------- */
@@ -32,17 +45,19 @@
   margin: 0 auto;
   padding: 0;
   border: 0;
-  border-radius: 20px;
+  /* Same corner as the SVG shell (rx 20 in a 560×350 viewBox) at any size. */
+  border-radius: 3.57% / 5.71%;
   background: none;
   cursor: pointer;
-  filter: drop-shadow(0 18px 30px rgb(0 0 0 / 0.18));
+  /* box-shadow, not filter: drop-shadow — a filter is re-rendered over the
+     whole cassette every frame the reels turn; a box-shadow isn't. */
+  box-shadow: var(--tape-shadow);
   transition: transform 350ms cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 .mixtape__cassette:focus-visible {
   outline: 2px solid var(--text);
   outline-offset: 6px;
-  border-radius: 22px;
 }
 
 .mixtape__cassette:active {

@@ -43,7 +43,6 @@ export function trackUriFromUrl(url) {
  * guesses forward between updates for smooth animation.
  */
 export function useSpotifyEmbed({ uri, enabled, containerRef, onEnded }) {
-  const [ready, setReady] = useState(false)
   const [failed, setFailed] = useState(false) // Spotify's script couldn't load at all
   const [slow, setSlow] = useState(false) // loaded, but the player isn't ready yet after 8s
   const [isPaused, setIsPaused] = useState(true)
@@ -55,9 +54,8 @@ export function useSpotifyEmbed({ uri, enabled, containerRef, onEnded }) {
   // button start audio inside Spotify's iframe — only a click in their player.
   const [blocked, setBlocked] = useState(false)
   const blockedTimer = useRef(0)
-  // Only play after the visitor asks: our play buttons, or a click inside
-  // Spotify's own player. Anything else (e.g. a logged-in Spotify session
-  // resuming on its own) gets paused right away.
+  // Only play after the visitor presses play on the card. Anything else (e.g.
+  // a logged-in Spotify session resuming on its own) gets paused right away.
   const playAllowed = useRef(false)
 
   const controllerRef = useRef(null)
@@ -68,6 +66,17 @@ export function useSpotifyEmbed({ uri, enabled, containerRef, onEnded }) {
   useEffect(() => {
     onEndedRef.current = onEnded
   }, [onEnded])
+
+  // Asked to play but nothing started after a few seconds → the browser blocked it.
+  const watchForBlockedPlay = useCallback(() => {
+    clearTimeout(blockedTimer.current)
+    blockedTimer.current = setTimeout(() => {
+      if (!playback.current.isPaused || !pendingPlayRef.current) return
+      pendingPlayRef.current = false
+      setPendingPlay(false)
+      setBlocked(true)
+    }, 6000)
+  }, [])
 
   useEffect(() => {
     const container = containerRef.current
@@ -98,12 +107,11 @@ export function useSpotifyEmbed({ uri, enabled, containerRef, onEnded }) {
           controller.addListener('ready', () => {
             controller.isReady = true
             clearTimeout(timeout)
-            setReady(true)
             setSlow(false)
             if (pendingPlayRef.current) {
-              pendingPlayRef.current = false
-              setPendingPlay(false)
+              // Stay in "loading" until sound actually starts (cleared in playback_update).
               controller.play()
+              watchForBlockedPlay()
             }
           })
 
@@ -127,6 +135,12 @@ export function useSpotifyEmbed({ uri, enabled, containerRef, onEnded }) {
             playback.current = { position, duration, isPaused: paused, at: performance.now() }
             setIsPaused(paused)
             if (!paused) setBlocked(false)
+            // "Starting" ends once the song is really moving (Spotify sends a
+            // few paused/buffering updates while it gets going).
+            if (!paused && position > 0) {
+              pendingPlayRef.current = false
+              setPendingPlay(false)
+            }
             setIsBuffering(Boolean(buffering))
             setDurationMs(duration)
             setSeconds(ended ? 0 : Math.floor(position / 1000))
@@ -149,21 +163,7 @@ export function useSpotifyEmbed({ uri, enabled, containerRef, onEnded }) {
       controllerRef.current = null
       container.replaceChildren()
     }
-  }, [enabled, uri, containerRef])
-
-  useEffect(() => {
-    function onBlur() {
-      // Focus moved into an iframe → the visitor clicked inside Spotify's player.
-      setTimeout(() => {
-        const active = document.activeElement
-        if (active?.tagName === 'IFRAME' && containerRef.current?.contains(active)) {
-          playAllowed.current = true
-        }
-      }, 0)
-    }
-    window.addEventListener('blur', onBlur)
-    return () => window.removeEventListener('blur', onBlur)
-  }, [containerRef])
+  }, [enabled, uri, containerRef, watchForBlockedPlay])
 
   /** 0–1 progress through the track, estimated forward between Spotify updates. */
   const getProgress = useCallback(() => {
@@ -180,18 +180,19 @@ export function useSpotifyEmbed({ uri, enabled, containerRef, onEnded }) {
     if (controller?.isReady) {
       const wasPaused = playback.current.isPaused
       controller.togglePlay()
-      // Asked to play but nothing happened after a few seconds → the browser blocked it.
       if (wasPaused) {
-        clearTimeout(blockedTimer.current)
-        blockedTimer.current = setTimeout(() => {
-          if (playback.current.isPaused) setBlocked(true)
-        }, 3000)
+        pendingPlayRef.current = true // show "loading" until sound starts
+        setPendingPlay(true)
+        watchForBlockedPlay()
+      } else {
+        pendingPlayRef.current = false // pressed again while starting = cancel
+        setPendingPlay(false)
       }
     } else {
       pendingPlayRef.current = !pendingPlayRef.current
       setPendingPlay(pendingPlayRef.current)
     }
-  }, [])
+  }, [watchForBlockedPlay])
 
   const pause = useCallback(() => {
     if (!playback.current.isPaused) controllerRef.current?.pause()
@@ -200,7 +201,6 @@ export function useSpotifyEmbed({ uri, enabled, containerRef, onEnded }) {
   }, [])
 
   return {
-    ready,
     failed,
     slow,
     isPaused,

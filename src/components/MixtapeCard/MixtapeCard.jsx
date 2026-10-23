@@ -1,5 +1,4 @@
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { useInView } from '../../hooks/useInView.js'
 import { ArrowUpRightIcon } from '../icons.jsx'
 import Cassette from './Cassette.jsx'
 import './mixtape.css'
@@ -21,8 +20,11 @@ function formatTime(totalSeconds) {
 export default function MixtapeCard({ track }) {
   const uri = trackUriFromUrl(track.spotifyUrl)
 
-  // Load Spotify only when the card is getting close, so it doesn't slow the first paint.
-  const [cardRef, nearView] = useInView({ threshold: 0, rootMargin: '400px' })
+  // Load Spotify's (heavy) player only once the visitor shows interest in the
+  // card: pointer over it, a tap, or keyboard focus. If they press play
+  // before it's ready, it starts as soon as it loads.
+  const [wantsPlayer, setWantsPlayer] = useState(false)
+  const showInterest = wantsPlayer ? undefined : () => setWantsPlayer(true)
   const embedRef = useRef(null)
 
   const hubLeft = useRef(null)
@@ -38,7 +40,7 @@ export default function MixtapeCard({ track }) {
 
   const player = useSpotifyEmbed({
     uri,
-    enabled: nearView && Boolean(uri),
+    enabled: wantsPlayer && Boolean(uri),
     containerRef: embedRef,
     onEnded: handleEnded,
   })
@@ -95,15 +97,16 @@ export default function MixtapeCard({ track }) {
   }
 
   return (
-    <div ref={cardRef} className="mixtape" data-state={state}>
+    <div className="mixtape" data-state={state} onPointerEnter={showInterest} onFocus={showInterest}>
       <button
         type="button"
         className="mixtape__cassette allow-motion"
         aria-pressed={playing}
         aria-label={`${action} ${trackName}`}
         onClick={handleToggle}
-        onPointerEnter={() => setHovered(true)}
-        onPointerLeave={() => setHovered(false)}
+        // Hover only matters in the error state (slow spin), so don't re-render otherwise.
+        onPointerEnter={failed ? () => setHovered(true) : undefined}
+        onPointerLeave={failed ? () => setHovered(false) : undefined}
       >
         <Cassette title={track.title} artist={track.artist} hubRefs={hubRefs} packRefs={packRefs} />
       </button>
