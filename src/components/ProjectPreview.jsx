@@ -1,21 +1,23 @@
 import { useState } from 'react'
 
 /**
- * A project's screenshot, or a placeholder sketch when there's no image
- * (or it fails to load). Used on the fan cards and in the popup.
+ * One screenshot, or a placeholder sketch when there's no image (or it fails
+ * to load). Used for the fan card covers and in the popup gallery.
+ * Extra props (e.g. aria-hidden) go on the <img>.
  */
-export default function ProjectPreview({ project, className = '' }) {
+export default function ProjectPreview({ src, alt, className = '', ...imgProps }) {
   const [failed, setFailed] = useState(false)
 
-  if (project.image && !failed) {
+  if (src && !failed) {
     return (
       <img
         className={`preview preview--image ${className}`}
-        src={project.image}
-        alt={`Screenshot of ${project.title}`}
+        src={src}
+        alt={alt}
         loading="lazy"
         decoding="async"
         onError={() => setFailed(true)}
+        {...imgProps}
       />
     )
   }

@@ -47,7 +47,11 @@ export default function ProjectFan({ projects }) {
                     ))}
                   </span>
                 )}
-                <ProjectPreview project={project} className="fan__preview" />
+                <ProjectPreview
+                  src={project.images?.[0]}
+                  alt={`Screenshot of ${project.title}`}
+                  className="fan__preview"
+                />
               </button>
             </li>
           )

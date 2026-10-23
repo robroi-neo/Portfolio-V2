@@ -117,6 +117,132 @@ html:has(.project-modal[open]) {
   height: 120px;
 }
 
+/* ---------- Screenshot gallery (projects with 2+ images) ---------- */
+
+.gallery {
+  position: relative;
+}
+
+/* Slides sit side by side in a strip; the strip slides to the current one. */
+.gallery__viewport {
+  overflow: hidden;
+  cursor: grab;
+  touch-action: pan-y; /* vertical scrolling stays native, horizontal is our swipe */
+  user-select: none;
+}
+
+.gallery__viewport.is-dragging {
+  cursor: grabbing;
+}
+
+.gallery__track {
+  display: flex;
+  transition: transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+/* Follow the finger/mouse exactly while dragging. */
+.gallery__viewport.is-dragging .gallery__track {
+  transition: none;
+}
+
+.gallery__slide {
+  flex: 0 0 100%;
+  min-width: 0;
+}
+
+/* Phone screenshots: a few tall screens side by side, centered. */
+.gallery__slide--phone {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 16px;
+  padding: 24px 24px 48px; /* bottom room for the dots */
+}
+
+.gallery__slide--phone .project-modal__preview.preview--image {
+  flex: 0 1 auto;
+  width: auto;
+  height: min(60vh, 520px);
+  max-width: calc((100% - 32px) / 3);
+  border-radius: 14px;
+  object-fit: contain;
+}
+
+@media (max-width: 600px) {
+  .gallery__slide--phone .project-modal__preview.preview--image {
+    max-width: 100%;
+  }
+}
+
+.gallery__nav {
+  position: absolute;
+  top: 50%;
+  display: grid;
+  place-items: center;
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-pill);
+  background: rgb(17 17 17 / 0.6);
+  color: #fff;
+  cursor: pointer;
+  translate: 0 -50%;
+  transition: background-color var(--dur-hover) ease;
+}
+
+.gallery__nav--prev {
+  left: 12px;
+}
+
+.gallery__nav--next {
+  right: 12px;
+}
+
+@media (hover: hover) {
+  .gallery__nav:hover {
+    background: rgb(17 17 17 / 0.85);
+  }
+}
+
+.gallery__dots {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  display: flex;
+  gap: 4px;
+  padding: 4px 6px;
+  border-radius: var(--radius-pill);
+  background: rgb(17 17 17 / 0.5);
+  translate: -50% 0;
+}
+
+/* 8px dot, but a bigger invisible hit area for fingers. */
+.gallery__dot {
+  display: grid;
+  place-items: center;
+  width: 20px;
+  height: 20px;
+  padding: 0;
+  border: 0;
+  background: none;
+  cursor: pointer;
+}
+
+.gallery__dot::before {
+  content: '';
+  width: 8px;
+  height: 8px;
+  border-radius: var(--radius-pill);
+  background: #fff;
+  opacity: 0.4;
+  transition: opacity var(--dur-hover) ease;
+}
+
+.gallery__dot[aria-current='true']::before {
+  opacity: 1;
+}
+
 .project-modal__caption {
   display: grid;
   justify-items: center;

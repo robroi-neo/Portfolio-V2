@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import './ProjectModal.css'
-import ProjectPreview from './ProjectPreview.jsx'
+import ProjectGallery from './ProjectGallery.jsx'
 import { GithubIcon, XIcon } from './icons.jsx'
 
 /**
@@ -80,8 +80,13 @@ export default function ProjectModal({ project, onClose }) {
           </button>
 
           <div className="project-modal__frame">
-            {/* key resets the image's "failed" state when switching projects */}
-            <ProjectPreview key={project.id} project={project} className="project-modal__preview" />
+            {/* key starts each project at its first screenshot */}
+            <ProjectGallery
+              key={project.id}
+              images={project.images}
+              title={project.title}
+              device={project.device}
+            />
           </div>
 
           <div className="project-modal__caption">
