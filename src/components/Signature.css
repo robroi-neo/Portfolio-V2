@@ -1,9 +1,9 @@
-/* Signature — a pen stroke that draws itself once it's in view. */
+/* Signature — pen strokes that write themselves once it's in view. */
 
 .signature {
-  --draw-time: 2.2s;
+  --draw-time: 2.6s; /* the whole name, start to finish */
   display: block;
-  width: min(240px, 70%);
+  width: min(260px, 75%);
   height: auto;
   margin-inline: auto;
   color: var(--text); /* follows the theme */
@@ -13,26 +13,19 @@
 .signature__stroke {
   fill: none;
   stroke: currentColor;
-  stroke-width: 1.8; /* about the original pen width at this size */
+  stroke-width: 2.2;
   stroke-linecap: round;
   stroke-linejoin: round;
   /* Hidden: one dash the length of the path, pushed just past its start. */
   stroke-dasharray: 1 2;
   stroke-dashoffset: 1.01;
-  /* Slow start, quick middle, slow finish — like a real pen stroke. */
-  transition: stroke-dashoffset var(--draw-time) cubic-bezier(0.6, 0.05, 0.3, 1);
-}
-
-.signature__dot {
-  fill: currentColor;
-  opacity: 0;
-  transition: opacity 0.15s ease var(--draw-time); /* tap the dot after the stroke */
+  /* Each stroke runs for its share of the time, after the ones before it
+     (--start / --share are set per stroke in Signature.jsx). Linear, so the
+     pen moves at a steady speed from one stroke into the next. */
+  transition: stroke-dashoffset calc(var(--draw-time) * var(--share)) linear
+    calc(var(--draw-time) * var(--start));
 }
 
 .signature.is-drawn .signature__stroke {
   stroke-dashoffset: 0;
-}
-
-.signature.is-drawn .signature__dot {
-  opacity: 1;
 }
