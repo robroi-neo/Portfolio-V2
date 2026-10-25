@@ -20,11 +20,17 @@ function formatTime(totalSeconds) {
 export default function MixtapeCard({ track }) {
   const uri = trackUriFromUrl(track.spotifyUrl)
 
-  // Load Spotify's (heavy) player only once the visitor shows interest in the
-  // card: pointer over it, a tap, or keyboard focus. If they press play
-  // before it's ready, it starts as soon as it loads.
-  const [wantsPlayer, setWantsPlayer] = useState(false)
-  const showInterest = wantsPlayer ? undefined : () => setWantsPlayer(true)
+  // Load Spotify's player right after the page finishes loading, so it's
+  // ready before anyone clicks: play then starts instantly, which strict
+  // browsers need to count it as the visitor's click. Waiting for `load`
+  // keeps it from slowing down the first paint.
+  const [pageLoaded, setPageLoaded] = useState(() => document.readyState === 'complete')
+  useEffect(() => {
+    if (pageLoaded) return
+    const onLoad = () => setPageLoaded(true)
+    window.addEventListener('load', onLoad, { once: true })
+    return () => window.removeEventListener('load', onLoad)
+  }, [pageLoaded])
   const embedRef = useRef(null)
 
   const hubLeft = useRef(null)
@@ -40,7 +46,7 @@ export default function MixtapeCard({ track }) {
 
   const player = useSpotifyEmbed({
     uri,
-    enabled: wantsPlayer && Boolean(uri),
+    enabled: pageLoaded && Boolean(uri),
     containerRef: embedRef,
     onEnded: handleEnded,
   })
@@ -97,7 +103,7 @@ export default function MixtapeCard({ track }) {
   }
 
   return (
-    <div className="mixtape" data-state={state} onPointerEnter={showInterest} onFocus={showInterest}>
+    <div className="mixtape" data-state={state}>
       <button
         type="button"
         className="mixtape__cassette allow-motion"
