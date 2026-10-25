@@ -47,7 +47,7 @@ export default function App() {
         </Section>
 
         <Section id="stack" label="Stack">
-          <Stack items={STACK} />
+          <Stack groups={STACK} />
         </Section>
 
         <Section

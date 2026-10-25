@@ -1,36 +1,110 @@
-/* Stack — a row of tool icons with a name label on hover (like the dock, but underneath). */
+/* Stack — text filters, then a row of tool tiles that magnify under the
+   pointer (macOS-dock style), then the hovered tool's name. */
 
-.stack {
+/* ---------- Category filters: small uppercase text, like the section labels ---------- */
+
+.stack__filters {
   display: flex;
   flex-wrap: wrap;
-  justify-content: center;
-  /* 9 icons × 48px + 8 gaps × 24px = 624px, fits the 640px column on one row.
-     Narrower screens still wrap. */
-  gap: 24px;
-  margin: 0;
-  padding-bottom: 28px; /* room for the label so it doesn't collide with what's below */
+  gap: 6px 18px;
 }
 
-/* No frame: the logo itself is the icon, like app icons in a row.
-   Logos with their own background (rounded square, circle) keep that shape. */
-.stack__item {
-  position: relative;
+.stack__filter {
+  padding: 4px 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--label);
+  cursor: pointer;
+  text-decoration: underline;
+  text-decoration-color: transparent;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 6px;
+  transition:
+    color var(--dur-hover) ease,
+    text-decoration-color var(--dur-hover) ease;
+}
+
+@media (hover: hover) {
+  .stack__filter:hover {
+    color: var(--text);
+  }
+}
+
+.stack__filter[aria-pressed='true'] {
+  color: var(--text);
+  text-decoration-color: currentColor;
+}
+
+/* ---------- The tiles ---------- */
+
+.stack__dock {
   display: grid;
-  place-items: center;
-  width: 48px;
-  height: 48px;
-  text-decoration: none;
+  gap: 12px;
 }
 
-.stack__img,
-.stack__fallback {
-  transition: transform var(--dur-hover) var(--ease-out);
+/* Fixed height with headroom: magnified tiles grow upward into the space
+   above instead of pushing the page down. (ul.… beats base.css's
+   ul[role='list'] padding reset.) */
+ul.stack__bar {
+  --tile: 34px;
+  display: flex;
+  align-items: flex-end;
+  gap: 5px;
+  height: calc(var(--tile) + 28px);
+  margin: 0;
+  padding: 0;
+}
+
+.stack__entry {
+  display: flex;
+  align-items: flex-end;
+  transition:
+    opacity 0.25s ease,
+    filter 0.25s ease;
+}
+
+/* Filtered out: faded and grey, still in place so nothing jumps. */
+.stack__entry.is-dimmed {
+  opacity: 0.25;
+  filter: grayscale(1);
+}
+
+/* Extra space between categories. */
+.stack__gap {
+  width: 8px;
+}
+
+/* Tile size follows --s (set per tile from the pointer position in Stack.jsx). */
+.stack__tile {
+  --s: 1;
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: calc(var(--tile) * var(--s));
+  height: calc(var(--tile) * var(--s));
+  border-radius: calc(9px * var(--s));
+  background: var(--surface-muted);
+  text-decoration: none;
+  transition:
+    width 0.12s ease-out,
+    height 0.12s ease-out,
+    border-radius 0.12s ease-out;
+}
+
+.stack__tile:focus-visible {
+  --s: 1.3;
+  outline-offset: 3px;
 }
 
 .stack__img {
-  width: 100%;
-  height: 100%;
+  width: 58%;
+  height: 58%;
   object-fit: contain;
+  pointer-events: none;
 }
 
 /* Entries with a logoDark: show the one that matches the theme. */
@@ -43,60 +117,33 @@
   display: block;
 }
 
-/* Only the no-logo fallback gets a tile, so the letter isn't floating alone. */
 .stack__fallback {
-  display: grid;
-  place-items: center;
-  width: 100%;
-  height: 100%;
-  border-radius: var(--radius-control-lg);
-  background: var(--surface-muted);
   font-family: var(--font-mono);
-  font-size: var(--fs-meta);
-  font-weight: 500;
+  font-size: calc(11px * var(--s));
   color: var(--text-muted);
 }
 
-/* Name label below the icon. */
-.stack__tooltip {
-  position: absolute;
-  top: calc(100% + 10px);
-  left: 50%;
-  /* The icon box is a centering grid, which would otherwise re-center this
-     label inside the leftover space; start-align so left/top mean what they say. */
-  place-self: start;
-  translate: -50% -4px;
-  padding: 4px 8px;
-  border-radius: 6px;
-  background: var(--text);
-  color: var(--surface);
-  font-family: var(--font-mono);
-  font-size: 11px;
-  line-height: 1.4;
-  letter-spacing: 0.02em;
-  white-space: nowrap;
-  pointer-events: none;
-  opacity: 0;
-  transition:
-    opacity var(--dur-hover) ease,
-    translate var(--dur-hover) var(--ease-out);
+/* ---------- Name under the tiles ---------- */
+
+.stack__name {
+  min-height: 1.5em;
+  font-size: 0.9375rem;
+  color: var(--text);
 }
 
-/* Hover effects only on devices that actually hover (not touch screens). */
-@media (hover: hover) {
-  /* Same lift-and-grow as the dock icons. */
-  .stack__item:hover .stack__img,
-  .stack__item:hover .stack__fallback {
-    transform: translateY(-4px) scale(1.12);
-  }
-  .stack__item:hover .stack__tooltip {
-    opacity: 1;
-    translate: -50% 0;
-  }
-}
+/* ---------- Narrow screens ---------- */
 
-/* Keyboard users get the label too. */
-.stack__item:focus-visible .stack__tooltip {
-  opacity: 1;
-  translate: -50% 0;
+/* Too many tools for one row: the row scrolls sideways (no magnify on touch). */
+@media (max-width: 719px) {
+  ul.stack__bar {
+    overflow-x: auto;
+    scrollbar-width: none;
+    height: auto;
+    padding-top: 8px;
+  }
+
+  .stack__entry,
+  .stack__gap {
+    flex: none;
+  }
 }
