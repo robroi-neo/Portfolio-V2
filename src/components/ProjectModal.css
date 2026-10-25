@@ -18,36 +18,35 @@
 }
 
 /* ---------- Fade in / out ----------
-   Only opacity + transform, which the browser can animate on the GPU.
+   A quick opacity-only fade: short enough to feel instant, and no scaling
+   (scaling a popup full of big screenshots costs extra redraws).
    Closing: ProjectModal adds .is-closing, waits for modal-out to finish,
    then actually closes the dialog. */
 .project-modal[open] {
-  animation: modal-in 0.25s var(--ease-out);
+  animation: modal-in 0.12s ease-out;
 }
 
 .project-modal[open]::backdrop {
-  animation: backdrop-in 0.25s ease;
+  animation: backdrop-in 0.12s ease-out;
 }
 
 .project-modal.is-closing {
-  animation: modal-out 0.18s ease-in forwards;
+  animation: modal-out 0.1s ease-in forwards;
 }
 
 .project-modal.is-closing::backdrop {
-  animation: backdrop-out 0.18s ease-in forwards;
+  animation: backdrop-out 0.1s ease-in forwards;
 }
 
 @keyframes modal-in {
   from {
     opacity: 0;
-    transform: scale(0.97);
   }
 }
 
 @keyframes modal-out {
   to {
     opacity: 0;
-    transform: scale(0.98);
   }
 }
 
@@ -115,6 +114,192 @@ html:has(.project-modal[open]) {
 
 .project-modal__preview .preview__blocks span {
   height: 120px;
+}
+
+/* ---------- Placeholder (project without screenshots) ----------
+   A mock app window drawn in CSS; the project's name sits in the middle. */
+
+.placeholder {
+  --ph-bg: #f7f7f5;
+  --ph-surface: #ffffff;
+  --ph-ink: #1a1a1a;
+  --ph-muted: #5e5e5e;
+  --ph-line: rgb(0 0 0 / 0.08);
+  --ph-border: #e6e6e1;
+
+  display: grid;
+  grid-template-rows: auto minmax(0, 1fr);
+  aspect-ratio: 16 / 10;
+  background: var(--ph-bg);
+  color: var(--ph-ink);
+  overflow: hidden;
+}
+
+.placeholder--dark {
+  --ph-bg: #161615;
+  --ph-surface: #222220;
+  --ph-ink: #e3e3d3;
+  --ph-muted: #bdbdb0;
+  --ph-line: rgb(255 255 255 / 0.08);
+  --ph-border: #2e2e2b;
+}
+
+.placeholder__bar {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--ph-border);
+}
+
+.placeholder__dots {
+  display: flex;
+  gap: 6px;
+}
+
+.placeholder__dots span {
+  width: 9px;
+  height: 9px;
+  border-radius: var(--radius-pill);
+  background: var(--ph-line);
+}
+
+.placeholder__url {
+  width: 38%;
+  height: 14px;
+  margin-inline: auto;
+  border-radius: var(--radius-pill);
+  background: var(--ph-line);
+}
+
+/* Rows capped at the box's height, so the inner layout has to fit (no clipping). */
+.placeholder__body {
+  display: grid;
+  grid-template-rows: minmax(0, 1fr);
+  min-height: 0;
+}
+
+.placeholder__main {
+  display: grid;
+  /* minmax(0, 1fr): the name panel shrinks so the chart below isn't cut off. */
+  grid-template-rows: auto minmax(0, 1fr) auto auto;
+  gap: 14px;
+  min-height: 0;
+  padding: 18px 20px;
+}
+
+.placeholder__header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.placeholder__line {
+  display: block;
+  height: 8px;
+  border-radius: 4px;
+  background: var(--ph-line);
+}
+
+.placeholder__line--title {
+  width: 30%;
+  height: 12px;
+}
+
+.placeholder__line--short {
+  width: 50%;
+}
+
+.placeholder__line--big {
+  width: 70%;
+  height: 16px;
+  margin-top: 10px;
+}
+
+.placeholder__avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: var(--radius-pill);
+  background: var(--ph-line);
+}
+
+/* The highlight: the project's name. */
+.placeholder__hero {
+  display: grid;
+  place-content: center;
+  justify-items: center;
+  gap: 12px;
+  padding: 16px;
+  border: 1px solid var(--ph-border);
+  border-radius: 12px;
+  background: var(--ph-surface);
+  text-align: center;
+}
+
+.placeholder__name {
+  font-size: clamp(1.25rem, 3.4vw, 2rem);
+  font-weight: 600;
+  line-height: 1.15;
+  letter-spacing: var(--tracking-title);
+  text-wrap: balance;
+}
+
+.placeholder__tags {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 6px;
+}
+
+.placeholder__tag {
+  padding: 3px 10px;
+  border-radius: var(--radius-pill);
+  background: var(--ph-line);
+  color: var(--ph-muted);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.placeholder__tag.is-accent {
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.placeholder__stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+}
+
+.placeholder__card {
+  padding: 12px;
+  border: 1px solid var(--ph-border);
+  border-radius: 10px;
+  background: var(--ph-surface);
+}
+
+.placeholder__chart {
+  display: flex;
+  align-items: flex-end;
+  gap: 8px;
+  height: 64px;
+  padding: 10px 12px; /* bars sit inside the panel, not on its edge */
+  border: 1px solid var(--ph-border);
+  border-radius: 10px;
+  background: var(--ph-surface);
+}
+
+.placeholder__chart span {
+  flex: 1;
+  border-radius: 4px;
+  background: var(--ph-line);
+}
+
+/* Narrow popups: a taller box so the name has room. */
+@media (max-width: 600px) {
+  .placeholder {
+    aspect-ratio: 4 / 5;
+  }
 }
 
 /* ---------- Screenshot gallery (projects with 2+ images) ---------- */

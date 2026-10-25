@@ -32,7 +32,7 @@ export default function ProjectModal({ project, onClose }) {
   // Safety net: if the fade-out animation never reports back, close anyway.
   useEffect(() => {
     if (!closing) return
-    const timer = setTimeout(() => dialogRef.current?.close(), 400)
+    const timer = setTimeout(() => dialogRef.current?.close(), 250)
     return () => clearTimeout(timer)
   }, [closing])
 
@@ -86,6 +86,8 @@ export default function ProjectModal({ project, onClose }) {
               images={project.images}
               title={project.title}
               device={project.device}
+              tags={project.tags}
+              theme={project.theme}
             />
           </div>
 

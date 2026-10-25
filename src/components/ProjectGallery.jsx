@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { ChevronLeftIcon, ChevronRightIcon } from './icons.jsx'
+import ProjectPlaceholder from './ProjectPlaceholder.jsx'
 import ProjectPreview from './ProjectPreview.jsx'
 
 // How far (as a share of the gallery width) a drag must go to change slide.
@@ -23,7 +24,7 @@ function chunk(list, size) {
  * device="phone": tall mobile screenshots are grouped a few per slide so
  * they fill the wide frame instead of showing as one narrow strip.
  */
-export default function ProjectGallery({ images = [], title, device }) {
+export default function ProjectGallery({ images = [], title, device, tags, theme }) {
   const isPhone = device === 'phone'
   const [perSlide] = useState(() =>
     isPhone && !window.matchMedia(NARROW).matches ? PHONES_PER_SLIDE : 1,
@@ -45,6 +46,11 @@ export default function ProjectGallery({ images = [], title, device }) {
     window.addEventListener('keydown', onKeyDown)
     return () => window.removeEventListener('keydown', onKeyDown)
   }, [count])
+
+  // No screenshots yet: a mock app window with the project's name.
+  if (images.length === 0) {
+    return <ProjectPlaceholder title={title} tags={tags} theme={theme} />
+  }
 
   if (images.length < 2) {
     return (
