@@ -6,7 +6,6 @@ import MixtapeCard from './components/MixtapeCard/MixtapeCard.jsx'
 import ProjectFan from './components/ProjectFan.jsx'
 import ResumeLink from './components/ResumeLink.jsx'
 import Section from './components/Section.jsx'
-import Slot from './components/Slot.jsx'
 import Stack from './components/Stack.jsx'
 import TopBar from './components/TopBar.jsx'
 import { EXPERIENCE } from './data/experience.js'
@@ -18,7 +17,6 @@ import { STACK } from './data/stack.js'
 import { useActiveSection } from './hooks/useActiveSection.js'
 import { useScrollToHash } from './hooks/useScrollToHash.js'
 
-// Phase 1: the page skeleton. Each <Slot> marks a component built in a later phase.
 export default function App() {
   const activeId = useActiveSection(SECTION_IDS)
   useScrollToHash()
@@ -58,10 +56,6 @@ export default function App() {
           intro="In my spare time, I love playing games, listening to music, playing the guitar, and building fun things."
         >
           <MixtapeCard track={NOW_PLAYING} />
-          <Slot className="breakout" minHeight={260}>
-            Photo fan
-          </Slot>
-          <Slot minHeight={140}>Arcade door</Slot>
         </Section>
 
         <Section
