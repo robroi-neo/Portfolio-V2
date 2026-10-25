@@ -10,6 +10,7 @@
 //                Leave '' (or if it fails to load) to show the company's first letter instead.
 //   url          optional company link, makes the name clickable. '' for none.
 //   description  one or two sentences about what you did
+//   highlights   optional list of specific contributions, shown as bullet points
 export const EXPERIENCE = [
   {
     id: 'company-1',
@@ -19,7 +20,13 @@ export const EXPERIENCE = [
     company: 'Kumosoft llc.',
     logo: '',
     url: 'https://www.kumo-soft.com/',
-    description: 'Focused on Laravel + JS Development. Implemented Dental Odontogram module.',
+    description:
+      'Laravel + JavaScript development. Built the dental odontogram (interactive tooth chart) module.',
+    highlights: [
+      'Designed the database schema for the dental module and integrated it into the existing database.',
+      'Designed the mobile-first layout for the odontogram.',
+      'Researched and documented the domain and business logic, like tooth anatomy and surfaces, caries, and other conditions, to define the module’s features.',
+    ],
   },
   {
     id: 'company-2',
@@ -29,6 +36,11 @@ export const EXPERIENCE = [
     company: 'University of Mindanao',
     logo: '',
     url: 'https://umindanao.edu.ph/',
-    description: 'I learned programming, Software Development, and learning how to learn in this uni.',
+    description: 'Specialized in Machine Learning and AI. Built everything from business systems like POS and inventory to AI-driven projects.',
+    highlights: [
+      'Marketing Head of UM Enigma, a university tech org, leading the creatives and marketing department.',
+      'Modified a Random Forest model for my thesis, and applied CNN, NLP, and classical ML models across projects.',
+      'Built a POS, inventory, and transactions system demo for a local hardware store.',
+    ],
   },
 ]

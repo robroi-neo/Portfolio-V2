@@ -74,6 +74,74 @@
   color: var(--text-muted);
 }
 
+/* ---------- "Details" toggle + expandable highlights ---------- */
+
+.experience__toggle {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  justify-self: start;
+  margin-top: 4px;
+  padding: 2px 0;
+  border: 0;
+  background: none;
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  letter-spacing: var(--tracking-label);
+  text-transform: uppercase;
+  color: var(--label);
+  cursor: pointer;
+  transition: color var(--dur-hover) ease;
+}
+
+.experience__toggle svg {
+  transition: transform var(--dur-hover) var(--ease-out);
+}
+
+.experience__toggle.is-open svg {
+  transform: rotate(180deg);
+}
+
+@media (hover: hover) {
+  .experience__toggle:hover {
+    color: var(--text);
+  }
+  .experience__toggle:not(.is-open):hover svg {
+    transform: translateY(2px); /* nudge down: "there's more below" */
+  }
+}
+
+/* Height animates from 0 to the content's natural height (grid 0fr → 1fr). */
+.experience__panel {
+  display: grid;
+  grid-template-rows: 0fr;
+  opacity: 0;
+  transition:
+    grid-template-rows 0.25s var(--ease-out),
+    opacity 0.2s ease;
+}
+
+.experience__panel.is-open {
+  grid-template-rows: 1fr;
+  opacity: 1;
+}
+
+.experience__highlights {
+  display: grid;
+  gap: 6px;
+  min-height: 0;
+  overflow: hidden;
+  margin: 0;
+  padding: 6px 0 0 1.1em;
+  list-style: '– ';
+  color: var(--text-muted);
+  font-size: 0.9375rem;
+}
+
+.experience__highlights li::marker {
+  color: var(--label);
+}
+
 /* Narrow screens: dates sit above each entry instead of beside it. */
 @media (max-width: 559px) {
   .experience__item {
