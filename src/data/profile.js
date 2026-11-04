@@ -9,4 +9,7 @@ export const PROFILE = {
   firstName: 'Rob',
   role: 'Software Engineer · open to remote roles',
   email: 'robroineo2@gmail.com',
+  // Emoji blasted across the screen when the highlighted word in the intro is
+  // clicked. One emoji ('🤖') or a list to mix (['🤖', '✨', '🧠']).
+  confetti: '🤖',
 }

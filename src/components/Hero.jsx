@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { PROFILE } from '../data/profile.js'
 import { useCopyToClipboard } from '../hooks/useCopyToClipboard.js'
 import { useKeyboardShortcut } from '../hooks/useKeyboardShortcut.js'
+import { emojiConfetti } from '../lib/emojiConfetti.js'
 import './Hero.css'
 import { ArrowDownIcon, CheckIcon, MailIcon } from './icons.jsx'
 
@@ -10,6 +11,11 @@ export default function Hero() {
   const { copied, copy } = useCopyToClipboard(PROFILE.email)
   // Fall back to initials when no photo is set or the file can't be loaded.
   const [photoFailed, setPhotoFailed] = useState(false)
+
+  // Easter egg: the highlighted word fires emoji confetti up from the bottom of the screen.
+  function burst() {
+    emojiConfetti({ emoji: PROFILE.confetti || '🤖' })
+  }
   const showPhoto = Boolean(PROFILE.photo) && !photoFailed
 
   useKeyboardShortcut('c', copy)
@@ -38,9 +44,13 @@ export default function Hero() {
       </div>
 
       <p className="hero__bio">
-        Hey, I'm {PROFILE.firstName}, a computer science graduate and engineer based in Davao,
-        Philippines. I build web apps with <mark className="highlight">React</mark> and Supabase,
-        care about interfaces that feel clear and fast, and make small games when the itch hits.
+        Hey, I'm {PROFILE.firstName}, a software developer in Davao, Philippines who
+        likes putting{' '}
+        <button type="button" className="highlight highlight--button" onClick={burst}>
+          machine learning
+        </button>{' '}
+        to work on the
+        web. I wire models into real products, and make small games on the side.
       </p>
 
       <div className="hero__actions">

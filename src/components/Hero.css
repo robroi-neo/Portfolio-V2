@@ -72,6 +72,30 @@
   font-weight: 500;
 }
 
+/* The clickable highlight (confetti easter egg): looks like the plain one,
+   with a hint on hover that it does something. */
+.highlight--button {
+  display: inline;
+  border: 0;
+  font: inherit;
+  font-weight: 500;
+  line-height: inherit;
+  cursor: pointer;
+  transition:
+    box-shadow var(--dur-hover) ease,
+    transform var(--dur-press) ease;
+}
+
+@media (hover: hover) {
+  .highlight--button:hover {
+    box-shadow: 0 0 0 3px rgb(212 242 90 / 0.35);
+  }
+}
+
+.highlight--button:active {
+  transform: scale(0.96);
+}
+
 .hero__actions {
   display: flex;
   flex-wrap: wrap;
