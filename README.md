@@ -23,7 +23,8 @@ This repository is the source of my personal portfolio site.
 A hardware management system for an SME, with a functional POS, invoicing, inventory, permissions and
 auth, and a dashboard.
 
-**Laravel** · [Source code](https://github.com/robroi-neo/Hardware-Management-System)
+**Laravel** · [Live demo](https://hardware-management-system-cuy9.onrender.com/demo) ·
+[Source code](https://github.com/robroi-neo/Hardware-Management-System)
 
 <img src="public/projects/hardware-dashboard.webp" alt="Hardware Management System dashboard" width="720">
 

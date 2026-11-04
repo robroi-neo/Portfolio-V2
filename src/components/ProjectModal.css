@@ -466,3 +466,39 @@ html:has(.project-modal[open]) {
     background: #222;
   }
 }
+
+.project-modal__links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+}
+
+/* The live demo is the main call to action: solid, light on the dark popup. */
+.project-modal__link--primary {
+  border-color: var(--loud-text);
+  background: var(--loud-text);
+  color: var(--loud-bg);
+}
+
+@media (hover: hover) {
+  .project-modal__link--primary:hover {
+    background: #fff;
+  }
+}
+
+.project-modal__link svg {
+  transition: transform var(--dur-link) var(--ease-out);
+}
+
+@media (hover: hover) {
+  .project-modal__link--primary:hover svg {
+    transform: translate(2px, -2px);
+  }
+}
+
+.project-modal__note {
+  color: var(--loud-muted);
+  font-size: var(--fs-label);
+  opacity: 0.8;
+}

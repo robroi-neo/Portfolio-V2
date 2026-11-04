@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import './ProjectModal.css'
 import ProjectGallery from './ProjectGallery.jsx'
-import { GithubIcon, XIcon } from './icons.jsx'
+import { ArrowUpRightIcon, GithubIcon, XIcon } from './icons.jsx'
 
 /**
  * Full-screen popup for one project: big screenshot, title, description,
@@ -96,16 +96,34 @@ export default function ProjectModal({ project, onClose }) {
               {project.title}
             </h3>
             <p className="project-modal__description">{project.description}</p>
-            {project.github && (
-              <a
-                className="project-modal__link"
-                href={project.github}
-                target="_blank"
-                rel="noreferrer"
-              >
-                <GithubIcon size={16} />
-                View on GitHub
-              </a>
+            {(project.live || project.github) && (
+              <div className="project-modal__links">
+                {project.live && (
+                  <a
+                    className="project-modal__link project-modal__link--primary"
+                    href={project.live}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    Live demo
+                    <ArrowUpRightIcon size={16} />
+                  </a>
+                )}
+                {project.github && (
+                  <a
+                    className="project-modal__link"
+                    href={project.github}
+                    target="_blank"
+                    rel="noreferrer"
+                  >
+                    <GithubIcon size={16} />
+                    View on GitHub
+                  </a>
+                )}
+              </div>
+            )}
+            {project.live && project.liveNote && (
+              <p className="project-modal__note">{project.liveNote}</p>
             )}
           </div>
         </div>

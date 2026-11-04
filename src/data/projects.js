@@ -9,6 +9,8 @@
 //               them side by side (3 per slide) instead of one wide image per slide.
 //   description short paragraph shown in the popup
 //   github      repo URL, or '' to hide the GitHub link
+//   live        optional link to a deployed version (shown as a "Live demo" button)
+//   liveNote    optional small note under the buttons, e.g. about slow first loads
 //   tags        optional tech chips on the card (first one is highlighted)
 //   theme       'dark' or 'light' card style
 export const PROJECTS = [
@@ -23,6 +25,9 @@ export const PROJECTS = [
     description:
       'A Hardware Management System for an SME. It has a functional POS, Invoice, Inventory, Permissions and Auth, and Dashboard.',
     github: 'https://github.com/robroi-neo/Hardware-Management-System',
+    live: 'https://hardware-management-system-cuy9.onrender.com/',
+    // Render's free tier sleeps when idle, so the first visit can take a while.
+    liveNote: 'Hosted on a free server, so the first load can take up to a minute.',
     tags: ['Laravel'],
     theme: 'light',
   },
