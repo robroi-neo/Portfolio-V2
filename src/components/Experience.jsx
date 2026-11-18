@@ -28,13 +28,14 @@ function CompanyLogo({ company, logo }) {
 }
 
 /** One entry. If it has highlights, they're tucked behind a "Details" toggle. */
-function ExperienceItem({ start, end, role, company, logo, url, description, highlights }) {
+function ExperienceItem({ id, start, end, role, company, logo, url, description, highlights }) {
   const [open, setOpen] = useState(false)
   const panelId = useId()
   const hasHighlights = highlights?.length > 0
 
   return (
-    <li className="experience__item">
+    // id lets search results scroll straight to this entry.
+    <li id={`experience-${id}`} className="experience__item">
       <p className="experience__dates">
         {start} — {end || 'Now'}
       </p>

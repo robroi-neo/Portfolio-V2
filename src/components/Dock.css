@@ -22,9 +22,32 @@
   margin: 0;
 }
 
+.dock__divider {
+  align-self: center;
+  width: 1px;
+  height: 24px;
+  margin-inline: 2px;
+  background: var(--border);
+}
+
+/* Narrow phones: seven buttons + the divider only fit without the gaps. */
+@media (max-width: 380px) {
+  .dock {
+    padding: 4px;
+  }
+  .dock__list {
+    gap: 0;
+  }
+}
+
 .dock__item {
   position: relative;
   display: grid;
+  padding: 0;
+  border: 0;
+  background: none;
+  font: inherit;
+  cursor: pointer;
   place-items: center;
   width: var(--tap);
   height: var(--tap);

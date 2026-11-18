@@ -1,0 +1,518 @@
+/* ==========================================================================
+   Search — the top-bar trigger, the search window, and the result flash.
+   design-search §15. Quiet style (like the page), not the loud project popup.
+   ========================================================================== */
+
+/* ---------- Top-bar trigger (next to DAVAO, PH) ----------
+   The button is a 44px tap target; the visible pill inside is 32px, and the
+   negative margin keeps the thin top bar from getting taller. */
+.search-trigger {
+  display: inline-grid;
+  place-items: center;
+  min-width: var(--tap);
+  height: var(--tap);
+  margin-block: -6px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text-body);
+  cursor: pointer;
+}
+
+.search-trigger__pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  height: 32px;
+  padding: 0 5px 0 10px;
+  border: 1px solid var(--border-strong);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  box-shadow: 0 1px 2px rgb(0 0 0 / 0.04);
+  transition:
+    background-color var(--dur-hover) ease,
+    border-color var(--dur-hover) ease,
+    transform var(--dur-press) ease;
+}
+
+.search-trigger__kbd {
+  display: inline-flex;
+  align-items: center;
+  height: 22px;
+  padding: 0 8px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg);
+  color: var(--text-muted);
+  font-size: 11px;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.search-trigger.is-open .search-trigger__pill {
+  background: var(--surface-active);
+}
+
+.search-trigger:active .search-trigger__pill {
+  transform: scale(0.97);
+}
+
+@media (hover: hover) {
+  .search-trigger:hover .search-trigger__pill {
+    border-color: var(--label);
+    color: var(--text);
+  }
+}
+
+/* The focus ring goes on the pill, not the invisible 44px box around it. */
+.search-trigger:focus-visible {
+  outline: none;
+}
+.search-trigger:focus-visible .search-trigger__pill {
+  outline: 2px solid var(--text);
+  outline-offset: 2px;
+}
+
+/* Phones: just a round icon — no keyboard to hint at, and the bar is narrow. */
+@media (max-width: 520px), (pointer: coarse) {
+  .search-trigger__kbd {
+    display: none;
+  }
+  .search-trigger__pill {
+    width: 32px;
+    padding: 0;
+    justify-content: center;
+  }
+}
+
+/* ---------- The window ----------
+   Top-anchored (not centered) so it doesn't jump as the result count changes. */
+.search-window {
+  width: min(640px, 100vw - 32px);
+  max-width: none;
+  max-height: calc(100svh - 2 * min(12vh, 96px));
+  margin: min(12vh, 96px) auto auto;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-window);
+  background: var(--surface);
+  color: var(--text-body);
+  box-shadow: var(--shadow-window);
+  overflow: hidden;
+}
+
+/* No blur: like the project popup, it would have to be redrawn every frame of the fade. */
+.search-window::backdrop {
+  background: rgb(17 17 17 / 0.32);
+}
+
+html:has(.search-window[open]) {
+  overflow: hidden;
+}
+
+/* Opens instantly (with a key-click sound, see lib/keyClick.js).
+   Closing keeps a very short fade so the page doesn't flash back. */
+.search-window.is-closing {
+  animation: search-out 0.12s ease-in forwards;
+}
+.search-window.is-closing::backdrop {
+  animation: search-backdrop-out 0.12s ease-in forwards;
+}
+
+@keyframes search-out {
+  to {
+    opacity: 0;
+  }
+}
+@keyframes search-backdrop-out {
+  to {
+    opacity: 0;
+  }
+}
+
+.search-window__panel {
+  display: flex;
+  flex-direction: column;
+  max-height: inherit;
+}
+
+.search-window__handle {
+  display: none;
+}
+
+/* ---------- Search bar ---------- */
+.search-window__bar {
+  position: relative;
+  display: flex;
+  flex: none;
+  align-items: center;
+  gap: 12px;
+  height: 60px;
+  padding: 0 14px 0 20px;
+  border-bottom: 1px solid var(--border);
+  color: var(--text-muted);
+}
+
+.search-window__input {
+  flex: 1;
+  min-width: 0;
+  height: 100%;
+  padding: 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text);
+  font-size: 1.0625rem;
+  caret-color: var(--text);
+}
+
+.search-window__input::placeholder {
+  color: var(--label);
+}
+
+/* Hide the browser's own clear (×) button: Escape and backspace do the job. */
+.search-window__input::-webkit-search-cancel-button {
+  appearance: none;
+}
+
+.search-window__cancel {
+  display: none;
+  min-height: var(--tap);
+  padding: 0 6px;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-size: 0.9375rem;
+  cursor: pointer;
+}
+
+/* Thin line under the bar while results load. */
+.search-window__progress {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: -1px;
+  height: 2px;
+  overflow: hidden;
+}
+.search-window__progress::after {
+  content: '';
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 36%;
+  background: var(--text);
+  animation: search-progress 0.9s ease-in-out infinite;
+}
+@keyframes search-progress {
+  from {
+    translate: -100% 0;
+  }
+  to {
+    translate: 280% 0;
+  }
+}
+
+/* ---------- Body ---------- */
+.search-window__body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  padding: 8px;
+}
+
+.search-window__group {
+  padding: 12px 12px 6px;
+}
+
+.search-window__list {
+  display: grid;
+  gap: 2px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  transition: opacity var(--dur-hover) ease;
+}
+
+/* Previous results stay put while new ones load: no skeletons, no jumping. */
+.search-window__list.is-stale {
+  opacity: 0.5;
+}
+
+/* ---------- Rows ---------- */
+.search-option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 11px 12px;
+  border-radius: var(--radius-control-lg);
+  cursor: pointer;
+}
+
+.search-option[aria-selected='true'] {
+  background: var(--surface-muted);
+}
+
+.search-option--suggestion {
+  align-items: center;
+  min-height: var(--tap);
+  padding-block: 0;
+  color: var(--label);
+}
+
+.search-option__text {
+  flex: 1;
+  color: var(--text-body);
+  font-size: 0.9375rem;
+}
+
+.search-option__icon {
+  display: grid;
+  flex: none;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  margin-top: 1px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text-body);
+}
+
+.search-option__main {
+  display: grid;
+  flex: 1;
+  gap: 3px;
+  min-width: 0;
+}
+
+.search-option__title {
+  color: var(--text);
+  font-size: 0.9375rem;
+  font-weight: 500;
+  line-height: 1.35;
+}
+
+.search-option__crumb {
+  color: var(--label);
+  font-weight: 400;
+}
+
+.search-option__snippet {
+  display: -webkit-box;
+  overflow: hidden;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+}
+
+/* Words that literally match the query — the one place lime shows up here. */
+.search-option__snippet mark {
+  padding: 0 3px;
+  border-radius: 4px;
+  background: var(--accent);
+  color: var(--on-accent);
+}
+
+.search-option__aside {
+  display: grid;
+  flex: none;
+  justify-items: end;
+  gap: 8px;
+  padding-top: 2px;
+  color: var(--text-muted);
+}
+
+.search-option__score {
+  color: var(--label);
+  font-family: var(--font-mono);
+  font-size: var(--fs-label);
+  font-variant-numeric: tabular-nums;
+}
+
+/* The ↵ shows on the highlighted row only. */
+.search-option > svg:last-child,
+.search-option__aside > svg {
+  visibility: hidden;
+}
+.search-option[aria-selected='true'] > svg:last-child,
+.search-option[aria-selected='true'] .search-option__aside > svg {
+  visibility: visible;
+}
+
+/* ---------- Notes (no close match, offline) ---------- */
+.search-window__note {
+  display: grid;
+  gap: 4px;
+  padding: 14px 12px 10px;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.search-window__note-title {
+  color: var(--text);
+  font-size: 0.9375rem;
+  font-weight: 500;
+}
+
+.search-window__retry {
+  justify-self: start;
+  min-height: 40px;
+  margin-top: 8px;
+}
+
+.search-window__ask {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  min-height: var(--tap);
+  margin: 4px 12px;
+  padding: 0;
+  border: 0;
+  background: none;
+  color: var(--text);
+  font-size: 0.875rem;
+  text-decoration: underline;
+  text-decoration-color: var(--border-strong);
+  text-underline-offset: 3px;
+  cursor: pointer;
+}
+
+/* ---------- Jump-to pills ---------- */
+.search-window__jumps {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  padding: 0 12px 10px;
+}
+
+.search-jump {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 36px;
+  padding: 0 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--surface);
+  color: var(--text-body);
+  font-size: 0.875rem;
+  cursor: pointer;
+  transition: background-color var(--dur-hover) ease;
+}
+
+@media (hover: hover) {
+  .search-jump:hover {
+    background: var(--surface-muted);
+  }
+}
+
+/* ---------- Footer ---------- */
+.search-window__footer {
+  display: flex;
+  flex: none;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+  min-height: 42px;
+  padding: 0 16px;
+  border-top: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--label);
+  font-family: var(--font-mono);
+  font-size: 11px;
+}
+
+.search-window__keys {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+
+.search-window__keys kbd + kbd {
+  margin-left: -1px;
+}
+
+.search-window__keys kbd:nth-of-type(3) {
+  margin-left: 8px;
+}
+
+.search-window__status {
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- Phones: bottom sheet ---------- */
+@media (max-width: 640px) {
+  .search-window {
+    width: 100vw;
+    height: 92svh;
+    max-height: none;
+    margin: auto 0 0;
+    border-radius: var(--radius-window) var(--radius-window) 0 0;
+  }
+
+  .search-window.is-closing {
+    animation: search-sheet-out 0.2s ease-in forwards;
+  }
+
+  .search-window__panel {
+    height: 100%;
+  }
+
+  .search-window__handle {
+    display: block;
+    flex: none;
+    width: 36px;
+    height: 4px;
+    margin: 8px auto 0;
+    border-radius: 4px;
+    background: var(--border-strong);
+  }
+
+  .search-window__esc,
+  .search-window__keys {
+    display: none;
+  }
+
+  .search-window__cancel {
+    display: block;
+  }
+
+  .search-window__footer {
+    justify-content: center;
+    padding-bottom: env(safe-area-inset-bottom);
+  }
+}
+
+@keyframes search-sheet-out {
+  to {
+    translate: 0 100%;
+  }
+}
+
+/* ---------- Where a result lands: a short background flash ---------- */
+.search-flash {
+  border-radius: var(--radius-card);
+  animation: search-flash 1.2s ease-out;
+}
+
+@keyframes search-flash {
+  0%,
+  25% {
+    background-color: var(--surface-muted);
+    box-shadow: 0 0 0 10px var(--surface-muted);
+  }
+  100% {
+    background-color: transparent;
+    box-shadow: 0 0 0 10px transparent;
+  }
+}
+
+/* The flash already shows the spot; no extra ring from the scripted focus. */
+[data-search-target]:focus {
+  outline: none;
+}

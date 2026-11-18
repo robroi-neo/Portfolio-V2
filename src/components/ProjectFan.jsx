@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import './ProjectFan.css'
 import ProjectModal from './ProjectModal.jsx'
 import ProjectPreview from './ProjectPreview.jsx'
@@ -10,6 +10,16 @@ import ProjectPreview from './ProjectPreview.jsx'
 export default function ProjectFan({ projects }) {
   const [selected, setSelected] = useState(null)
   const middle = (projects.length - 1) / 2
+
+  // Search results can open a project too (see search/openResult.js).
+  useEffect(() => {
+    function onOpenProject(event) {
+      const project = projects.find((p) => p.id === event.detail.id)
+      if (project) setSelected(project)
+    }
+    window.addEventListener('portfolio:open-project', onOpenProject)
+    return () => window.removeEventListener('portfolio:open-project', onOpenProject)
+  }, [projects])
 
   return (
     <div className="fan breakout dot-grid">

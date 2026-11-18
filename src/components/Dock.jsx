@@ -1,9 +1,11 @@
 import './Dock.css'
+import { DockSearchButton } from './Search/SearchTrigger.jsx'
 
 /**
  * Floating dock (design.md §2). Each icon is a plain anchor link to its
  * section — smooth scrolling comes from CSS (`scroll-behavior: smooth`).
  * The highlighted icon follows `activeId`, which App gets from useActiveSection.
+ * Search sits at the end, after a divider: it opens a window, it isn't a section.
  */
 export default function Dock({ sections, activeId }) {
   return (
@@ -29,6 +31,10 @@ export default function Dock({ sections, activeId }) {
             </li>
           )
         })}
+        <li className="dock__divider" aria-hidden="true" />
+        <li>
+          <DockSearchButton />
+        </li>
       </ul>
     </nav>
   )

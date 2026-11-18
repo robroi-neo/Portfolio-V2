@@ -216,3 +216,22 @@ export function MailIcon(props) {
     </Icon>
   )
 }
+
+export function SearchIcon(props) {
+  return (
+    <Icon {...props}>
+      <circle cx="11" cy="11" r="7" />
+      <path d="m20 20-3.5-3.5" />
+    </Icon>
+  )
+}
+
+/** The ↵ "Enter" key, shown on the highlighted search result. */
+export function CornerDownLeftIcon(props) {
+  return (
+    <Icon {...props}>
+      <path d="M20 4v7a4 4 0 0 1-4 4H4" />
+      <path d="m9 10-5 5 5 5" />
+    </Icon>
+  )
+}
