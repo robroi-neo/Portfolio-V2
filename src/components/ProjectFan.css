@@ -1,86 +1,69 @@
-/* Project fan — overlapping cards that spread out on hover (design.md §2). */
+/* Project fan — held like a hand of playing cards (design.md §2).
+   The hand stays still; hovering a card pulls it up out of the hand. */
 
 .fan {
   --card-w: 280px;
-  /* Horizontal distance between cards at rest. Shrinks on narrower screens so
-     the fan stays compact in the middle just before it becomes a column. */
-  --rest-gap: clamp(80px, 11vw, 140px);
-  --gap: var(--rest-gap);
-  --tilt: 5deg; /* rotation per step from the middle */
-  --ease-smooth: cubic-bezier(
-    0.22,
-    1,
-    0.36,
-    1
-  ); /* fast start, long soft landing (card lift) */
-
-  /* Fan spread timing */
-  --fan-open: 0.6s; /* how long spreading out takes */
-  --fan-close: 0.6s; /* how long folding back takes */
-  --fan-ease: cubic-bezier(
-    0.39,
-    0.575,
-    0.565,
-    1
-  ); /* gentle ease-out: visible glide, soft stop */
-  padding-block: 30px;
+  /* Horizontal distance between cards. Shrinks on narrower screens so the
+     hand stays compact in the middle just before it becomes a column. */
+  --gap: clamp(80px, 11vw, 140px);
+  --tilt: 6deg; /* rotation per step from the middle */
+  --arc: 9px; /* outer cards sit lower, so the hand curves like it's held */
+  --lift: 56px; /* how far a hovered card rises */
+  padding-block: 64px 30px; /* room above for the raised card */
   overflow-x: clip;
 }
 
-/* The list is also the hover zone, so size it to the resting fan (plus a
-   little margin) instead of the full page width. Cards that spread outside
-   it still count as hovered, so the fan doesn't collapse under the cursor. */
 .fan__list {
   position: relative;
-  width: min(
-    100%,
-    calc(var(--card-w) + (var(--count) - 1) * var(--rest-gap) + 48px)
-  );
+  width: min(100%, calc(var(--card-w) + (var(--count) - 1) * var(--gap) + 48px));
   height: 320px;
   margin: 0 auto;
 }
 
+/* Each card's place in the hand. Rotating around a point below the card
+   (transform-origin) makes the cards splay from the "palm" like real ones.
+   The item itself never moves, so its hover area stays put while the card
+   inside rises — no flicker when the card slides out from under the cursor. */
 .fan__item {
   position: absolute;
   top: 50%;
   left: 50%;
   width: var(--card-w);
   transform: translate(-50%, -50%) translateX(calc(var(--offset) * var(--gap)))
-    translateY(calc(var(--drop) * 14px))
+    translateY(calc(var(--drop) * var(--drop) * var(--arc)))
     rotate(calc(var(--offset) * var(--tilt)));
-  will-change: transform;
-  /* Folding back (this is the resting state's transition, so it's used on the
-     way back). Cards further from the middle move a touch later, like a hand
-     of cards. */
-  transition:
-    transform var(--fan-close) var(--fan-ease) calc(var(--drop) * 25ms),
-    z-index 0s 0.6s; /* drop behind neighbours only after shrinking back */
+  transform-origin: 50% 140%;
+  /* Drop behind the neighbours only once the card has settled back. */
+  transition: z-index 0s 0.45s;
 }
 
-/* Spread out while the pointer (or keyboard focus) is in the fan.
-   :focus-visible = keyboard focus only, so a mouse click (which also focuses
-   the card) doesn't keep the fan open after the cursor leaves. */
-.fan:has(.fan__list:hover),
-.fan:has(:focus-visible),
-.fan.is-open {
-  /* As wide as fits: (screen − card − margin) ÷ 3 gaps, capped at 260px. */
-  --gap: clamp(100px, calc((100vw - var(--card-w) - 72px) / 3), 260px);
-  --tilt: 1.5deg;
-}
-
-/* Hovered/focused card comes to the front. */
-.fan__item:hover,
-.fan__item:has(:focus-visible) {
+/* The hovered/focused card comes to the front straight away… */
+.fan__item:has(:focus-visible),
+.fan__item.is-selected,
+.fan__list .fan__item:hover {
   z-index: 1;
+  transition: z-index 0s;
 }
 
-/* Spreading out: starts right away and glides open slowly. */
-.fan:has(.fan__list:hover) .fan__item,
-.fan:has(:focus-visible) .fan__item,
-.fan.is-open .fan__item {
-  transition:
-    transform var(--fan-open) var(--fan-ease) calc(var(--drop) * 40ms),
-    z-index 0s; /* come to the front immediately */
+/* …and rises along its own tilt, like pulling a card up out of the hand.
+   The opened card stays up behind its popup and settles once it closes. */
+.fan__item:has(:focus-visible) .fan__card,
+.fan__item.is-selected .fan__card {
+  transform: translateY(calc(var(--lift) * -1)) scale(1.04);
+  box-shadow:
+    var(--shadow-card),
+    0 28px 56px rgb(0 0 0 / 0.18);
+  transition-duration: 0.35s;
+}
+
+@media (hover: hover) {
+  .fan__item:hover .fan__card {
+    transform: translateY(calc(var(--lift) * -1)) scale(1.04);
+    box-shadow:
+      var(--shadow-card),
+      0 28px 56px rgb(0 0 0 / 0.18);
+    transition-duration: 0.35s;
+  }
 }
 
 /* ---------- Card ---------- */
@@ -100,19 +83,10 @@
   text-align: left;
   cursor: pointer;
   overflow: hidden;
+  /* Rising is quick (set on hover above); settling back is a touch slower. */
   transition:
-    transform 0.9s var(--ease-smooth),
-    box-shadow 0.9s var(--ease-smooth);
-}
-
-/* Hovered card lifts and grows a little. */
-@media (hover: hover) {
-  .fan__card:hover {
-    transform: translateY(-12px) scale(1.06);
-    box-shadow:
-      var(--shadow-card),
-      0 24px 48px rgb(0 0 0 / 0.16);
-  }
+    transform 0.45s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.45s cubic-bezier(0.2, 0.8, 0.2, 1);
 }
 
 /* Cards are "physical" light or dark objects, so they keep their own colors

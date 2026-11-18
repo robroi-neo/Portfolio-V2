@@ -4,17 +4,15 @@ import ProjectModal from './ProjectModal.jsx'
 import ProjectPreview from './ProjectPreview.jsx'
 
 /**
- * Overlapping project cards. Hovering the group spreads them out; clicking a
- * card opens it in ProjectModal. On phones the cards stack in a column.
+ * Project cards held like a hand of playing cards. Hovering a card pulls it
+ * up out of the hand; clicking it opens it in ProjectModal. On phones the cards stack in a column.
  */
 export default function ProjectFan({ projects }) {
   const [selected, setSelected] = useState(null)
   const middle = (projects.length - 1) / 2
 
   return (
-    // is-open keeps the fan spread while the popup covers it, so the cards
-    // don't fold and re-spread behind it.
-    <div className={`fan breakout dot-grid${selected ? ' is-open' : ''}`}>
+    <div className="fan breakout dot-grid">
       <ul className="fan__list" role="list" style={{ '--count': projects.length }}>
         {projects.map((project, i) => {
           // Distance from the middle card: -1.5, -0.5, 0.5, 1.5 for four cards.
@@ -23,7 +21,8 @@ export default function ProjectFan({ projects }) {
           return (
             <li
               key={project.id}
-              className="fan__item allow-motion"
+              // is-selected keeps the opened card raised behind its popup.
+              className={`fan__item allow-motion${selected?.id === project.id ? ' is-selected' : ''}`}
               style={{ '--offset': offset, '--drop': Math.abs(offset) }}
             >
               <button
