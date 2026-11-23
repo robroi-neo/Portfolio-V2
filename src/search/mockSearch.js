@@ -23,6 +23,7 @@ const RELATED = [
   ['mobile', 'flutter', 'firebase', 'app', 'phone', 'android'],
   ['contact', 'email', 'mail', 'reach', 'hire', 'message', 'github', 'linkedin', 'x'],
   ['school', 'university', 'student', 'study', 'thesis', 'degree', 'education'],
+  ['resume', 'cv', 'curriculum', 'vitae', 'pdf', 'download', 'hire', 'recruiter'],
   ['job', 'intern', 'internship', 'experience', 'career', 'company', 'role'],
 ]
 const RELATED_OF = new Map()

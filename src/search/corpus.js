@@ -3,6 +3,7 @@ import NOW_PLAYING from '../data/now-playing.json'
 import { CONTACT } from '../data/contact.js'
 import { PROFILE } from '../data/profile.js'
 import { PROJECTS } from '../data/projects.js'
+import { RESUME } from '../data/resume.js'
 import { SECTION_COPY } from '../data/sections.js'
 import { STACK } from '../data/stack.js'
 
@@ -15,7 +16,7 @@ import { STACK } from '../data/stack.js'
  *
  * Each passage:
  *   id       unique, e.g. 'project:pixel-pal' (max 64 bytes for Vectorize)
- *   type     'project' | 'experience' | 'stack' | 'personal' | 'contact'
+ *   type     'project' | 'experience' | 'stack' | 'personal' | 'contact' | 'resume'
  *            (picks the result icon — the same icon the dock uses for that section)
  *   title    bold first line of the result row
  *   crumb    muted text after the title (where on the page it lives)
@@ -25,6 +26,7 @@ import { STACK } from '../data/stack.js'
  *              { kind: 'project', id }      → opens that project's popup
  *              { kind: 'anchor', id }       → scrolls to the element with that id and flashes it
  *              { kind: 'link', url }        → opens an outside link in a new tab
+ *              { kind: 'download', url, filename } → downloads a file (the résumé)
  */
 export function buildSearchCorpus() {
   const passages = []
@@ -109,6 +111,19 @@ export function buildSearchCorpus() {
       target: { kind: 'anchor', id: 'home' },
     },
   )
+
+  // The résumé: shown only once a file is set, same as the link on the page.
+  if (RESUME.file) {
+    passages.push({
+      id: 'resume:pdf',
+      type: 'resume',
+      title: 'Résumé',
+      crumb: 'Download',
+      text: 'Download my résumé as a PDF: experience, education and skills on one page.',
+      keywords: ['resume', 'cv', 'curriculum vitae', 'pdf', 'download', 'hire', 'hiring', 'recruiter'],
+      target: { kind: 'download', url: RESUME.file, filename: RESUME.download },
+    })
+  }
 
   for (const link of CONTACT.links) {
     if (!link.url) continue

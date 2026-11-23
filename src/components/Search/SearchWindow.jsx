@@ -10,6 +10,7 @@ import {
   BriefcaseIcon,
   CodeIcon,
   CornerDownLeftIcon,
+  DownloadIcon,
   GamepadIcon,
   LayersIcon,
   MailIcon,
@@ -28,6 +29,7 @@ const TYPE_ICON = {
   personal: GamepadIcon,
   profile: UserIcon,
   contact: MailIcon,
+  resume: DownloadIcon,
 }
 const TYPE_NAME = {
   project: 'Project',
@@ -36,6 +38,7 @@ const TYPE_NAME = {
   personal: 'Personal',
   profile: 'About',
   contact: 'Contact',
+  resume: 'Résumé download',
 }
 
 const JUMP_TO = SECTIONS.filter((s) => s.id !== 'home')
@@ -315,7 +318,11 @@ export default function SearchWindow() {
                           <span className="search-option__score" title="Match score">
                             {formatScore(result.score)}
                           </span>
-                          <CornerDownLeftIcon size={16} />
+                          {result.target.kind === 'download' ? (
+                            <DownloadIcon size={16} />
+                          ) : (
+                            <CornerDownLeftIcon size={16} />
+                          )}
                         </span>
                       </li>
                     )

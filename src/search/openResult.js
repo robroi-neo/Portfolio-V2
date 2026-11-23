@@ -9,6 +9,16 @@ export function openResult(target) {
     return
   }
 
+  if (target.kind === 'download') {
+    const a = document.createElement('a')
+    a.href = target.url
+    a.download = target.filename ?? ''
+    document.body.append(a)
+    a.click()
+    a.remove()
+    return
+  }
+
   if (target.kind === 'link') {
     window.open(target.url, '_blank', 'noopener,noreferrer')
     return
