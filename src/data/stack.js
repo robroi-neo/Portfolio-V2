@@ -46,7 +46,6 @@ export const STACK = [
     label: 'ML / AI',
     items: [
       { id: 'python', name: 'Python', logo: si('python'), url: 'https://www.python.org' },
-      { id: 'tensorflow', name: 'TensorFlow', logo: si('tensorflow'), url: 'https://www.tensorflow.org' },
     ],
   },
   {
@@ -62,6 +61,7 @@ export const STACK = [
         logo: 'https://cdn.jsdelivr.net/gh/devicons/devicon@v2.16.0/icons/vscode/vscode-original.svg',
         url: 'https://code.visualstudio.com',
       },
+      { id: 'claude', name: 'Claude', logo: si('claude'), url: 'https://claude.ai' },
     ],
   },
 ]
